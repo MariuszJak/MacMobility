@@ -102,6 +102,7 @@ class ConnectionManager: NSObject, ObservableObject {
         serviceBrowser.invitePeer(peer, to: session, withContext: context, timeout: 30)
     }
     
+    
     func disconnect() {
         session.disconnect()
         pairingStatus = .notPaired
