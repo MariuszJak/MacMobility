@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C09774E52B5C22A000F4FFE6 /* MacMobilityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */; };
-		C09774E72B5C22A000F4FFE6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E62B5C22A000F4FFE6 /* ContentView.swift */; };
 		C09774E92B5C22A100F4FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774E82B5C22A100F4FFE6 /* Assets.xcassets */; };
 		C09774EC2B5C22A100F4FFE6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */; };
 		C09774F62B5C22A100F4FFE6 /* MacMobilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774F52B5C22A100F4FFE6 /* MacMobilityTests.swift */; };
@@ -44,7 +43,6 @@
 /* Begin PBXFileReference section */
 		C09774E12B5C22A000F4FFE6 /* MacMobility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMobility.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMobilityApp.swift; sourceTree = "<group>"; };
-		C09774E62B5C22A000F4FFE6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C09774E82B5C22A100F4FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C09774F12B5C22A100F4FFE6 /* MacMobilityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacMobilityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,7 +113,6 @@
 				C09775152B5C234F00F4FFE6 /* Managers */,
 				C09775102B5C233000F4FFE6 /* Extensions */,
 				C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */,
-				C09774E62B5C22A000F4FFE6 /* ContentView.swift */,
 				C09775182B5C239600F4FFE6 /* iOSMainView.swift */,
 				C097751A2B5C239B00F4FFE6 /* QRCodeScanner.swift */,
 				C097751C2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift */,
@@ -302,7 +299,6 @@
 				C09775172B5C235700F4FFE6 /* ConnectionManager.swift in Sources */,
 				C09775132B5C233B00F4FFE6 /* String+Ext.swift in Sources */,
 				C09775142B5C233B00F4FFE6 /* Array+Ext.swift in Sources */,
-				C09774E72B5C22A000F4FFE6 /* ContentView.swift in Sources */,
 				C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */,
 				C097751F2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift in Sources */,
 				C097751D2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift in Sources */,
@@ -476,6 +472,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacMobility/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MacMobility;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Scan QR code.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MacMobility needs this permission for connectic to MacOS version.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -488,7 +486,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.macmobility.MacMobility;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -513,6 +511,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacMobility/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MacMobility;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Scan QR code.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MacMobility needs this permission for connectic to MacOS version.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -525,7 +525,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.macmobility.MacMobility;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
