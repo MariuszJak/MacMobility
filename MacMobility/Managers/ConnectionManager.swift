@@ -98,7 +98,6 @@ class ConnectionManager: NSObject, ObservableObject {
         }
     }
     
-    
     func invitePeer(with peer: MCPeerID, context: Data? = nil) {
         serviceBrowser.invitePeer(peer, to: session, withContext: context, timeout: 30)
     }
