@@ -31,7 +31,7 @@ extension ConnectionManager: ConnectionSenable {
         send(data)
     }
 
-    func getAppsList() {
+    func getScreenData() {
         guard !session.connectedPeers.isEmpty,
               let data = "Connected - send data.".data(using: .utf8) else {
             return
@@ -42,6 +42,14 @@ extension ConnectionManager: ConnectionSenable {
     func send(appName: String) {
         guard !session.connectedPeers.isEmpty,
               let data = appName.data(using: .utf8) else {
+            return
+        }
+        send(data)
+    }
+    
+    func send(webpageLink: WebpageItem) {
+        guard !session.connectedPeers.isEmpty,
+              let data = try? JSONEncoder().encode(webpageLink) else {
             return
         }
         send(data)
@@ -71,6 +79,7 @@ extension ConnectionManager: ConnectionSenable {
                 guard let self else { return }
                 let orientation = UIDevice.current.orientation
                 let apps = appList.flatMap { $0.apps }
+                let webpages = webpagesList.flatMap { $0.webpages }
                 switch orientation {
                 case .unknown, .portrait, .portraitUpsideDown:
                     self.rowCount = 5
@@ -82,17 +91,24 @@ extension ConnectionManager: ConnectionSenable {
                     self.rowCount = 5
                 }
                 self.appList = apps.chunked(into: rowCount).map { AppListData(apps: $0) }
+                self.webpagesList = webpages.chunked(into: rowCount).map { WebPageListData(webpages: $0) }
             }
             .store(in: &subscriptions)
     }
 }
 
+struct RunningAppResponse: Codable {
+    let applicationsTitle: String
+    let runningApps: [RunningAppData]
+}
+
+struct WebpagesResponse: Codable {
+    let webpagesTitle: String
+    let webpages: [WebpageItem]
+}
+
 extension ConnectionManager {
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        guard let apps = try? JSONDecoder().decode([RunningAppData].self, from: data) else {
-            return
-        }
-        
         DispatchQueue.main.async {
             let orientation = UIDevice.current.orientation
             switch orientation {
@@ -105,7 +121,32 @@ extension ConnectionManager {
             @unknown default:
                 self.rowCount = 5
             }
-            self.appList = apps.chunked(into: self.rowCount).map { AppListData(apps: $0) }
+            
+            if let apps = try? JSONDecoder().decode(RunningAppResponse.self, from: data) {
+                guard apps.applicationsTitle == "applicationsTitle" else { return }
+                self.appList = apps.runningApps.chunked(into: self.rowCount).map { AppListData(apps: $0) }
+            }
+            
+            if let webpages = try? JSONDecoder().decode(WebpagesResponse.self, from: data) {
+                guard webpages.webpagesTitle == "webpagesTitle" else { return }
+                self.webpagesList = webpages.webpages.chunked(into: self.rowCount).map { WebPageListData(webpages: $0) }
+            }
         }
     }
 }
+
+enum Browsers: String, CaseIterable, Identifiable, Codable {
+    var id: Self { self }
+    
+    case chrome
+    case safari
+}
+
+struct WebpageItem: Identifiable, Codable, Equatable {
+    var id: String
+    var webpageTitle: String
+    var webpageLink: String
+    var faviconLink: String?
+    var browser: Browsers
+}
+

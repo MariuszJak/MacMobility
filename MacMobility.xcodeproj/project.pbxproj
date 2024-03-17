@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C01B42012BA3A4B7006C5C37 /* CoreDataSPM in Frameworks */ = {isa = PBXBuildFile; productRef = C01B42002BA3A4B7006C5C37 /* CoreDataSPM */; };
+		C01B42042BA3A4D0006C5C37 /* CoreDataSPM in Frameworks */ = {isa = PBXBuildFile; productRef = C01B42032BA3A4D0006C5C37 /* CoreDataSPM */; };
+		C01B42092BA3A598006C5C37 /* CoreDataSPM in Frameworks */ = {isa = PBXBuildFile; productRef = C01B42082BA3A598006C5C37 /* CoreDataSPM */; };
 		C09774E52B5C22A000F4FFE6 /* MacMobilityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */; };
 		C09774E92B5C22A100F4FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774E82B5C22A100F4FFE6 /* Assets.xcassets */; };
 		C09774EC2B5C22A100F4FFE6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */; };
@@ -21,6 +24,7 @@
 		C097751D2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C097751C2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift */; };
 		C097751F2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C097751E2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift */; };
 		C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */; };
+		C0BDB29D2BA3AF5800B36D19 /* Swiftly in Frameworks */ = {isa = PBXBuildFile; productRef = C0BDB29C2BA3AF5800B36D19 /* Swiftly */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +45,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C00139EF2BA436C100FE558C /* Swiftly */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Swiftly; sourceTree = "<group>"; };
+		C00139F02BA436C800FE558C /* CoreDataSPM */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CoreDataSPM; sourceTree = "<group>"; };
 		C09774E12B5C22A000F4FFE6 /* MacMobility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMobility.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMobilityApp.swift; sourceTree = "<group>"; };
 		C09774E82B5C22A100F4FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -66,6 +72,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C01B42042BA3A4D0006C5C37 /* CoreDataSPM in Frameworks */,
+				C0BDB29D2BA3AF5800B36D19 /* Swiftly in Frameworks */,
+				C01B42092BA3A598006C5C37 /* CoreDataSPM in Frameworks */,
+				C01B42012BA3A4B7006C5C37 /* CoreDataSPM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,13 +96,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C01B420A2BA3A5C0006C5C37 /* SPM */ = {
+			isa = PBXGroup;
+			children = (
+				C00139F02BA436C800FE558C /* CoreDataSPM */,
+				C00139EF2BA436C100FE558C /* Swiftly */,
+			);
+			path = SPM;
+			sourceTree = "<group>";
+		};
 		C09774D82B5C229F00F4FFE6 = {
 			isa = PBXGroup;
 			children = (
+				C01B420A2BA3A5C0006C5C37 /* SPM */,
 				C09774E32B5C22A000F4FFE6 /* MacMobility */,
 				C09774F42B5C22A100F4FFE6 /* MacMobilityTests */,
 				C09774FE2B5C22A100F4FFE6 /* MacMobilityUITests */,
 				C09774E22B5C22A000F4FFE6 /* Products */,
+				C0BDB29B2BA3AF5800B36D19 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -166,6 +187,13 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
+		C0BDB29B2BA3AF5800B36D19 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -182,6 +210,12 @@
 			dependencies = (
 			);
 			name = MacMobility;
+			packageProductDependencies = (
+				C01B42002BA3A4B7006C5C37 /* CoreDataSPM */,
+				C01B42032BA3A4D0006C5C37 /* CoreDataSPM */,
+				C01B42082BA3A598006C5C37 /* CoreDataSPM */,
+				C0BDB29C2BA3AF5800B36D19 /* Swiftly */,
+			);
 			productName = MacMobility;
 			productReference = C09774E12B5C22A000F4FFE6 /* MacMobility.app */;
 			productType = "com.apple.product-type.application";
@@ -254,6 +288,8 @@
 				Base,
 			);
 			mainGroup = C09774D82B5C229F00F4FFE6;
+			packageReferences = (
+			);
 			productRefGroup = C09774E22B5C22A000F4FFE6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -481,7 +517,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -520,7 +556,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -654,6 +690,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C01B42002BA3A4B7006C5C37 /* CoreDataSPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreDataSPM;
+		};
+		C01B42032BA3A4D0006C5C37 /* CoreDataSPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreDataSPM;
+		};
+		C01B42082BA3A598006C5C37 /* CoreDataSPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreDataSPM;
+		};
+		C0BDB29C2BA3AF5800B36D19 /* Swiftly */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Swiftly;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C09774D92B5C229F00F4FFE6 /* Project object */;
 }

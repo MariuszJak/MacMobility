@@ -49,6 +49,7 @@ class ConnectionManager: NSObject, ObservableObject {
     }
 
     @Published public var appList: [AppListData] = []
+    @Published public var webpagesList: [WebPageListData] = []
     public var rowCount = 4
 
     override init() {
