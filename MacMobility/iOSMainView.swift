@@ -24,6 +24,11 @@ struct WebPageListData: Identifiable {
     var webpages: [WebpageItem]
 }
 
+struct WorkspacesListData: Identifiable {
+    var id: String { UUID().uuidString }
+    var workspaces: [WorkspaceSendableItem]
+}
+
 struct WorkSpaceControlItem: Identifiable {
     var id: String { UUID().uuidString }
     let title: String
@@ -56,12 +61,14 @@ struct iOSMainView: View {
     var body: some View {
         VStack {
             qrCodeScannerButtonView
-            TabView {
-                appGridView
-                webItemsGridView
+            if connectionManager.pairingStatus == .paired  {
+                TabView {
+                    workspaceItemsGridView
+                    webItemsGridView
+//                    appGridView
+                }
+                .tabViewStyle(.page)
             }
-            .tabViewStyle(.page)
-//            workspaceControls
             disconnectButtonView
         }
         .alert("Received invitation from \(connectionManager.receivedInviteFrom?.displayName ?? "")",
@@ -102,6 +109,7 @@ struct iOSMainView: View {
         case .notPaired:
             connectionManager.appList.removeAll()
             connectionManager.webpagesList.removeAll()
+            connectionManager.workspacesList.removeAll()
             connectionManager.startAdvertising()
             connectionManager.startBrowsing()
             connectionManager.receivedInvite = false
@@ -234,40 +242,48 @@ struct iOSMainView: View {
     }
     
     private var appGridView: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(alignment: .leading) {
-                ForEach($connectionManager.appList) { item in
-                    HStack(alignment: .top) {
-                        ForEach(Array(item.apps.wrappedValue.enumerated()), id: \.offset) { object in
-                            VStack {
-                                if let data = object.element.imageData,
-                                   let image = UIImage(data: data) {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .cornerRadius(6.0)
-                                        .frame(width: 62.0, height: 62.0)
-                                    Text(object.element.title)
-                                        .font(.caption2)
-                                        .frame(maxWidth: 60.0)
-                                        .multilineTextAlignment(.center)
-                                } else {
-                                    Image("Empty")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .cornerRadius(6.0)
-                                        .frame(width: 74.0, height: 74.0)
-                                    Text(object.element.title)
-                                        .font(.caption2)
-                                        .frame(maxWidth: 60.0)
-                                        .multilineTextAlignment(.center)
+        VStack {
+            HStack {
+                Text("Running apps")
+                    .font(.system(size: 18.0, weight: .medium))
+                    .padding([.vertical, .leading], 4.0)
+                Spacer()
+            }
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading) {
+                    ForEach($connectionManager.appList) { item in
+                        HStack(alignment: .top) {
+                            ForEach(Array(item.apps.wrappedValue.enumerated()), id: \.offset) { object in
+                                VStack {
+                                    if let data = object.element.imageData,
+                                       let image = UIImage(data: data) {
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .cornerRadius(6.0)
+                                            .frame(width: 62.0, height: 62.0)
+                                        Text(object.element.title)
+                                            .font(.caption2)
+                                            .frame(maxWidth: 60.0)
+                                            .multilineTextAlignment(.center)
+                                    } else {
+                                        Image("Empty")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .cornerRadius(6.0)
+                                            .frame(width: 74.0, height: 74.0)
+                                        Text(object.element.title)
+                                            .font(.caption2)
+                                            .frame(maxWidth: 60.0)
+                                            .multilineTextAlignment(.center)
+                                    }
+                                }
+                                .onTapGesture {
+                                    connectionManager.send(appName: object.element.title)
                                 }
                             }
-                            .onTapGesture {
-                                connectionManager.send(appName: object.element.title)
-                            }
+                            Spacer()
                         }
-                        Spacer()
                     }
                 }
             }
@@ -275,37 +291,103 @@ struct iOSMainView: View {
     }
     
     private var webItemsGridView: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(alignment: .leading) {
-                ForEach($connectionManager.webpagesList) { item in
-                    HStack(alignment: .top) {
-                        ForEach(Array(item.webpages.wrappedValue.enumerated()), id: \.offset) { object in
-                            VStack {
-                                if let favlink = object.element.faviconLink, let url = URL(string: favlink) {
-                                    SwiftlyImage(url: url, placeholder: .init(named: "Empty"))
-                                        .cornerRadius(6.0)
-                                        .frame(width: 62.0, height: 62.0)
-                                } else {
-                                    Image("Empty")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .cornerRadius(6.0)
-                                        .frame(width: 62.0, height: 62.0)
+        VStack {
+            HStack {
+                Text("Web links")
+                    .font(.system(size: 18.0, weight: .medium))
+                    .padding([.vertical, .leading], 4.0)
+                Spacer()
+            }
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading) {
+                    ForEach($connectionManager.webpagesList) { item in
+                        HStack(alignment: .top) {
+                            ForEach(Array(item.webpages.wrappedValue.enumerated()), id: \.offset) { object in
+                                Button {
+                                    connectionManager.send(webpageLink: object.element)
+                                } label: {
+                                    VStack {
+                                        if let favlink = object.element.faviconLink, let url = URL(string: favlink) {
+                                            SwiftlyImage(url: url, placeholder: .init(named: "Empty"))
+                                                .cornerRadius(6.0)
+                                                .frame(width: 62.0, height: 62.0)
+                                        } else {
+                                            Image(object.element.browser.icon)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .cornerRadius(6.0)
+                                                .frame(width: 62.0, height: 62.0)
+                                        }
+                                        Text(object.element.webpageTitle)
+                                            .foregroundStyle(Color.white)
+                                            .font(.caption2)
+                                            .frame(maxWidth: 60.0)
+                                            .multilineTextAlignment(.center)
+                                    }
                                 }
-                                Text(object.element.webpageTitle)
-                                    .font(.caption2)
-                                    .frame(maxWidth: 60.0)
-                                    .multilineTextAlignment(.center)
                             }
-                            .onTapGesture {
-                                connectionManager.send(webpageLink: object.element)
-                            }
+                            Spacer()
                         }
-                        Spacer()
                     }
                 }
             }
         }
+    }
+    
+    private var workspaceItemsGridView: some View {
+        VStack {
+            HStack {
+                Text("Workspaces")
+                    .font(.system(size: 18.0, weight: .medium))
+                    .padding([.vertical, .leading], 4.0)
+                Spacer()
+            }
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack {
+                    ForEach($connectionManager.workspacesList) { item in
+                        HStack(alignment: .top) {
+                            ForEach(Array(item.workspaces.wrappedValue.enumerated()), id: \.offset) { object in
+                                VStack(alignment: .leading){
+                                    Text(object.element.title)
+                                        .font(.caption2)
+                                        .multilineTextAlignment(.center)
+                                    grid(for: object.element.apps)
+                                    Button("Launch All") {
+                                        connectionManager.send(workspace: object.element)
+                                    }
+                                }
+                                .padding(.all, 10.0)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(Color.gray.opacity(0.1))
+                                )
+                            }
+                            Spacer()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func grid(for apps: [AppSendableInfo]) -> some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 50))], spacing: 4) {
+            ForEach(apps) { app in
+                if let data = app.imageData,
+                   let image = UIImage(data: data) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .cornerRadius(6.0)
+                        .frame(width: 62.0, height: 62.0)
+                        .onTapGesture {
+                            connectionManager.send(app: app)
+                        }
+                }
+            }
+        }
+        .padding(.bottom, 20.0)
     }
 }
 

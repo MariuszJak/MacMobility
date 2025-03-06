@@ -55,6 +55,22 @@ extension ConnectionManager: ConnectionSenable {
         send(data)
     }
     
+    func send(app: AppSendableInfo) {
+        guard !session.connectedPeers.isEmpty,
+              let data = try? JSONEncoder().encode(app) else {
+            return
+        }
+        send(data)
+    }
+    
+    func send(workspace: WorkspaceSendableItem) {
+        guard !session.connectedPeers.isEmpty,
+              let data = try? JSONEncoder().encode(workspace) else {
+            return
+        }
+        send(data)
+    }
+    
     func send(position: CursorPosition) {
         guard !session.connectedPeers.isEmpty,
               let data = try? JSONEncoder().encode(position) else {
@@ -107,6 +123,38 @@ struct WebpagesResponse: Codable {
     let webpages: [WebpageItem]
 }
 
+struct WorkspacesResponse: Codable {
+    let workspacesTitle: String
+    let workspaces: [WorkspaceSendableItem]
+}
+
+struct AppSendableInfo: Identifiable, Codable {
+    let id: String
+    let name: String
+    let path: String
+    let imageData: Data?
+    
+    public init(id: String, name: String, path: String, imageData: Data?) {
+        self.id = id
+        self.name = name
+        self.path = path
+        self.imageData = imageData
+    }
+}
+
+struct WorkspaceSendableItem: Identifiable, Codable {
+    var id: String
+    let title: String
+    let apps: [AppSendableInfo]
+    
+    public init(id: String, title: String, apps: [AppSendableInfo]) {
+        self.id = id
+        self.title = title
+        self.apps = apps
+    }
+}
+
+
 extension ConnectionManager {
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         DispatchQueue.main.async {
@@ -131,6 +179,11 @@ extension ConnectionManager {
                 guard webpages.webpagesTitle == "webpagesTitle" else { return }
                 self.webpagesList = webpages.webpages.chunked(into: self.rowCount).map { WebPageListData(webpages: $0) }
             }
+            
+            if let workspaces = try? JSONDecoder().decode(WorkspacesResponse.self, from: data) {
+                guard workspaces.workspacesTitle == "workspacesTitle" else { return }
+                self.workspacesList = workspaces.workspaces.chunked(into: self.rowCount).map { WorkspacesListData(workspaces: $0) }
+            }
         }
     }
 }
@@ -140,6 +193,15 @@ enum Browsers: String, CaseIterable, Identifiable, Codable {
     
     case chrome
     case safari
+    
+    var icon: String {
+        switch self {
+        case .chrome:
+            return "chrome-logo"
+        case .safari:
+            return "safari-logo"
+        }
+    }
 }
 
 struct WebpageItem: Identifiable, Codable, Equatable {
