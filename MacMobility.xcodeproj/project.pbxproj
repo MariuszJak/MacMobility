@@ -10,6 +10,10 @@
 		C01B42012BA3A4B7006C5C37 /* CoreDataSPM in Frameworks */ = {isa = PBXBuildFile; productRef = C01B42002BA3A4B7006C5C37 /* CoreDataSPM */; };
 		C01B42042BA3A4D0006C5C37 /* CoreDataSPM in Frameworks */ = {isa = PBXBuildFile; productRef = C01B42032BA3A4D0006C5C37 /* CoreDataSPM */; };
 		C01B42092BA3A598006C5C37 /* CoreDataSPM in Frameworks */ = {isa = PBXBuildFile; productRef = C01B42082BA3A598006C5C37 /* CoreDataSPM */; };
+		C064BA5B2D876ED10091E2BE /* Color+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5A2D876ED10091E2BE /* Color+Ext.swift */; };
+		C064BA5D2D876EF60091E2BE /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */; };
+		C064BA5F2D876F080091E2BE /* Optional+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5E2D876F080091E2BE /* Optional+Ext.swift */; };
+		C064BA612D876F210091E2BE /* View+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA602D876F210091E2BE /* View+Ext.swift */; };
 		C09774E52B5C22A000F4FFE6 /* MacMobilityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */; };
 		C09774E92B5C22A100F4FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774E82B5C22A100F4FFE6 /* Assets.xcassets */; };
 		C09774EC2B5C22A100F4FFE6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */; };
@@ -47,6 +51,10 @@
 /* Begin PBXFileReference section */
 		C00139EF2BA436C100FE558C /* Swiftly */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Swiftly; sourceTree = "<group>"; };
 		C00139F02BA436C800FE558C /* CoreDataSPM */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CoreDataSPM; sourceTree = "<group>"; };
+		C064BA5A2D876ED10091E2BE /* Color+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Ext.swift"; sourceTree = "<group>"; };
+		C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
+		C064BA5E2D876F080091E2BE /* Optional+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Ext.swift"; sourceTree = "<group>"; };
+		C064BA602D876F210091E2BE /* View+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Ext.swift"; sourceTree = "<group>"; };
 		C09774E12B5C22A000F4FFE6 /* MacMobility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMobility.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMobilityApp.swift; sourceTree = "<group>"; };
 		C09774E82B5C22A100F4FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -173,6 +181,10 @@
 			children = (
 				C09775122B5C233B00F4FFE6 /* Array+Ext.swift */,
 				C09775112B5C233B00F4FFE6 /* String+Ext.swift */,
+				C064BA5A2D876ED10091E2BE /* Color+Ext.swift */,
+				C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */,
+				C064BA5E2D876F080091E2BE /* Optional+Ext.swift */,
+				C064BA602D876F210091E2BE /* View+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -336,11 +348,15 @@
 				C09775132B5C233B00F4FFE6 /* String+Ext.swift in Sources */,
 				C09775142B5C233B00F4FFE6 /* Array+Ext.swift in Sources */,
 				C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */,
+				C064BA5D2D876EF60091E2BE /* UIColor+Ext.swift in Sources */,
 				C097751F2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift in Sources */,
 				C097751D2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift in Sources */,
 				C097751B2B5C239B00F4FFE6 /* QRCodeScanner.swift in Sources */,
 				C09774E52B5C22A000F4FFE6 /* MacMobilityApp.swift in Sources */,
 				C09775192B5C239600F4FFE6 /* iOSMainView.swift in Sources */,
+				C064BA5B2D876ED10091E2BE /* Color+Ext.swift in Sources */,
+				C064BA612D876F210091E2BE /* View+Ext.swift in Sources */,
+				C064BA5F2D876F080091E2BE /* Optional+Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -515,8 +531,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -554,8 +569,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

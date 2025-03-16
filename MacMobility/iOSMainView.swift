@@ -29,6 +29,11 @@ struct WorkspacesListData: Identifiable {
     var workspaces: [WorkspaceSendableItem]
 }
 
+struct ShortcutsListData: Identifiable {
+    var id: String { UUID().uuidString }
+    var shortcuts: [ShortcutObject]
+}
+
 struct WorkSpaceControlItem: Identifiable {
     var id: String { UUID().uuidString }
     let title: String
@@ -65,6 +70,7 @@ struct iOSMainView: View {
                 TabView {
                     workspaceItemsGridView
                     webItemsGridView
+                    shortcutItemsGridView
 //                    appGridView
                 }
                 .tabViewStyle(.page)
@@ -110,6 +116,7 @@ struct iOSMainView: View {
             connectionManager.appList.removeAll()
             connectionManager.webpagesList.removeAll()
             connectionManager.workspacesList.removeAll()
+            connectionManager.shortcutsList.removeAll()
             connectionManager.startAdvertising()
             connectionManager.startBrowsing()
             connectionManager.receivedInvite = false
@@ -370,6 +377,56 @@ struct iOSMainView: View {
         }
     }
     
+    private var shortcutItemsGridView: some View {
+        VStack {
+            HStack {
+                Text("Shortcuts")
+                    .font(.system(size: 18.0, weight: .medium))
+                    .padding([.vertical, .leading], 4.0)
+                Spacer()
+            }
+            grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts })
+        }
+    }
+    
+    func grid(shortcuts: [ShortcutObject]) -> some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 6) {
+                ForEach(0..<42) { index in
+                    if let test = shortcuts.first(where: { $0.index == index }) {
+                        VStack {
+                            ZStack {
+                                Text(test.title)
+                                    .font(.system(size: 12))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.all, 3)
+                            }
+                        }
+                        .frame(width: 80, height: 80)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20.0)
+                                .fill(Color(hex: test.color ?? ""))
+                            
+                        )
+                        .onTapGesture {
+                            connectionManager.send(shortcut: test)
+                        }
+                    } else {
+                        VStack {
+                        }
+                        .frame(width: 80, height: 80)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20.0)
+                                .fill(.gray.opacity(0.2))
+                            
+                        )
+                    }
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+    
     @ViewBuilder
     func grid(for apps: [AppSendableInfo]) -> some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 50))], spacing: 4) {
@@ -388,16 +445,5 @@ struct iOSMainView: View {
             }
         }
         .padding(.bottom, 20.0)
-    }
-}
-
-extension View {
-   @ViewBuilder
-   func `if`<Content: View>(_ conditional: Bool, content: (Self) -> Content) -> some View {
-        if conditional {
-            content(self)
-        } else {
-            self
-        }
     }
 }

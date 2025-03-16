@@ -71,6 +71,14 @@ extension ConnectionManager: ConnectionSenable {
         send(data)
     }
     
+    func send(shortcut: ShortcutObject) {
+        guard !session.connectedPeers.isEmpty,
+              let data = try? JSONEncoder().encode(shortcut) else {
+            return
+        }
+        send(data)
+    }
+    
     func send(position: CursorPosition) {
         guard !session.connectedPeers.isEmpty,
               let data = try? JSONEncoder().encode(position) else {
@@ -154,6 +162,24 @@ struct WorkspaceSendableItem: Identifiable, Codable {
     }
 }
 
+public struct ShortcutObject: Identifiable, Codable {
+    public let index: Int?
+    public let id: String
+    public let title: String
+    public var color: String?
+    
+    public init(index: Int? = nil, id: String, title: String, color: String? = nil) {
+        self.index = index
+        self.id = id
+        self.title = title
+        self.color = color
+    }
+}
+
+struct ShortcutsResponse: Codable {
+    let shortcutTitle: String
+    let shortcuts: [ShortcutObject]
+}
 
 extension ConnectionManager {
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
@@ -177,12 +203,17 @@ extension ConnectionManager {
             
             if let webpages = try? JSONDecoder().decode(WebpagesResponse.self, from: data) {
                 guard webpages.webpagesTitle == "webpagesTitle" else { return }
-                self.webpagesList = webpages.webpages.chunked(into: self.rowCount).map { WebPageListData(webpages: $0) }
+                self.webpagesList = [WebPageListData(webpages: webpages.webpages)]
             }
             
             if let workspaces = try? JSONDecoder().decode(WorkspacesResponse.self, from: data) {
                 guard workspaces.workspacesTitle == "workspacesTitle" else { return }
                 self.workspacesList = workspaces.workspaces.chunked(into: self.rowCount).map { WorkspacesListData(workspaces: $0) }
+            }
+            
+            if let shortcuts = try? JSONDecoder().decode(ShortcutsResponse.self, from: data) {
+                guard shortcuts.shortcutTitle == "shortcutTitle" else { return }
+                self.shortcutsList = [ShortcutsListData(shortcuts: shortcuts.shortcuts)]
             }
         }
     }
