@@ -66,16 +66,24 @@ struct iOSMainView: View {
     var body: some View {
         VStack {
             qrCodeScannerButtonView
-            if connectionManager.pairingStatus == .paired  {
-                TabView {
-                    workspaceItemsGridView
-                    webItemsGridView
-                    shortcutItemsGridView
-//                    appGridView
+            ZStack {
+                if connectionManager.pairingStatus == .paired  {
+                    TabView {
+                        workspaceItemsGridView
+                        webItemsGridView
+                        shortcutItemsGridView
+                    }
+                    .tabViewStyle(.page)
                 }
-                .tabViewStyle(.page)
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        disconnectButtonView
+                    }
+                }
+                
             }
-            disconnectButtonView
         }
         .alert("Received invitation from \(connectionManager.receivedInviteFrom?.displayName ?? "")",
                isPresented: $connectionManager.receivedInvite) {
@@ -102,8 +110,9 @@ struct iOSMainView: View {
         .onChange(of: connectionManager.pairingStatus) { pairingStatus in
             handlePairingStatus(with: pairingStatus)
         }
+        .ignoresSafeArea()
         .animation(.easeInOut, value: $connectionManager.pairingStatus.wrappedValue)
-        .padding()
+        .padding(.horizontal)
     }
     
     func handlePairingStatus(with pairingStatus: PairingStatus) {
@@ -317,18 +326,18 @@ struct iOSMainView: View {
                                         if let favlink = object.element.faviconLink, let url = URL(string: favlink) {
                                             SwiftlyImage(url: url, placeholder: .init(named: "Empty"))
                                                 .cornerRadius(6.0)
-                                                .frame(width: 62.0, height: 62.0)
+                                                .frame(width: 74, height: 74)
                                         } else {
                                             Image(object.element.browser.icon)
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .cornerRadius(6.0)
-                                                .frame(width: 62.0, height: 62.0)
+                                                .frame(width: 74, height: 74)
                                         }
                                         Text(object.element.webpageTitle)
                                             .foregroundStyle(Color.white)
                                             .font(.caption2)
-                                            .frame(maxWidth: 60.0)
+                                            .frame(maxWidth: 74)
                                             .multilineTextAlignment(.center)
                                     }
                                 }
@@ -352,24 +361,25 @@ struct iOSMainView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
                     ForEach($connectionManager.workspacesList) { item in
-                        HStack(alignment: .top) {
-                            ForEach(Array(item.workspaces.wrappedValue.enumerated()), id: \.offset) { object in
-                                VStack(alignment: .leading){
-                                    Text(object.element.title)
-                                        .font(.caption2)
-                                        .multilineTextAlignment(.center)
-                                    grid(for: object.element.apps)
-                                    Button("Launch All") {
-                                        connectionManager.send(workspace: object.element)
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 200))], spacing: 6) {
+                                ForEach(Array(item.workspaces.wrappedValue.enumerated()), id: \.offset) { object in
+                                    VStack(alignment: .leading){
+                                        Text(object.element.title)
+                                            .font(.caption2)
+                                            .multilineTextAlignment(.center)
+                                        grid(for: object.element.apps)
+                                        Button("Launch All") {
+                                            connectionManager.send(workspace: object.element)
+                                        }
                                     }
+                                    .frame(width: 200)
+                                    .padding(.all, 10.0)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(Color.gray.opacity(0.1))
+                                    )
                                 }
-                                .padding(.all, 10.0)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .fill(Color.gray.opacity(0.1))
-                                )
-                            }
-                            Spacer()
+                                Spacer()
                         }
                     }
                 }
@@ -387,6 +397,7 @@ struct iOSMainView: View {
             }
             grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts })
         }
+        .padding(.bottom, 10)
     }
     
     func grid(shortcuts: [ShortcutObject]) -> some View {
@@ -394,23 +405,50 @@ struct iOSMainView: View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 6) {
                 ForEach(0..<42) { index in
                     if let test = shortcuts.first(where: { $0.index == index }) {
-                        VStack {
-                            ZStack {
-                                Text(test.title)
-                                    .font(.system(size: 12))
-                                    .multilineTextAlignment(.center)
-                                    .padding(.all, 3)
+                        switch test.type {
+                        case .shortcut:
+                            VStack {
+                                ZStack {
+                                    Text(test.title)
+                                        .font(.system(size: 12))
+                                        .multilineTextAlignment(.center)
+                                        .padding(.all, 3)
+                                }
+                            }
+                            .frame(width: 80, height: 80)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20.0)
+                                    .fill(Color(hex: test.color ?? ""))
+                                
+                            )
+                            .onTapGesture {
+                                connectionManager.send(shortcut: test)
+                            }
+                        case .app:
+                            if let data = test.imageData,
+                               let image = UIImage(data: data) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .cornerRadius(20.0)
+                                    .frame(width: 80, height: 80)
+                                    .onTapGesture {
+                                        connectionManager.send(shortcut: test)
+                                    }
+                            }
+                        case .webpage:
+                            if let data = test.browser?.icon {
+                                Image(data)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .cornerRadius(20.0)
+                                    .frame(width: 80, height: 80)
+                                    .onTapGesture {
+                                        connectionManager.send(shortcut: test)
+                                    }
                             }
                         }
-                        .frame(width: 80, height: 80)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20.0)
-                                .fill(Color(hex: test.color ?? ""))
-                            
-                        )
-                        .onTapGesture {
-                            connectionManager.send(shortcut: test)
-                        }
+                        
                     } else {
                         VStack {
                         }

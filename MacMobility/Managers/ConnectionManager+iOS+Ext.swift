@@ -162,17 +162,33 @@ struct WorkspaceSendableItem: Identifiable, Codable {
     }
 }
 
+public enum ShortcutType: String, Codable {
+    case shortcut
+    case app
+    case webpage
+}
+
 public struct ShortcutObject: Identifiable, Codable {
     public let index: Int?
     public let id: String
     public let title: String
+    public let path: String?
     public var color: String?
+    public var faviconLink: String?
+    public let type: ShortcutType
+    public let imageData: Data?
+    public var browser: Browsers?
     
-    public init(index: Int? = nil, id: String, title: String, color: String? = nil) {
+    public init(type: ShortcutType, index: Int? = nil, path: String? = nil, id: String, title: String, color: String? = nil, faviconLink: String? = nil, browser: Browsers? = nil, imageData: Data? = nil) {
+        self.type = type
         self.index = index
+        self.path = path
         self.id = id
         self.title = title
         self.color = color
+        self.imageData = imageData
+        self.faviconLink = faviconLink
+        self.browser = browser
     }
 }
 
@@ -219,8 +235,8 @@ extension ConnectionManager {
     }
 }
 
-enum Browsers: String, CaseIterable, Identifiable, Codable {
-    var id: Self { self }
+public enum Browsers: String, CaseIterable, Identifiable, Codable {
+    public var id: Self { self }
     
     case chrome
     case safari
