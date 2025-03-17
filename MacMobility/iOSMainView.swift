@@ -68,12 +68,7 @@ struct iOSMainView: View {
             qrCodeScannerButtonView
             ZStack {
                 if connectionManager.pairingStatus == .paired  {
-                    TabView {
-                        workspaceItemsGridView
-                        webItemsGridView
-                        shortcutItemsGridView
-                    }
-                    .tabViewStyle(.page)
+                    shortcutItemsGridView
                 }
                 VStack {
                     Spacer()
