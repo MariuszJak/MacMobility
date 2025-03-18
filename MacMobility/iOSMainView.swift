@@ -207,6 +207,7 @@ struct iOSMainView: View {
                         showsDisconnectAlert = true
                     }
                     .foregroundStyle(.red)
+                    .padding(.bottom, 32)
                 }
             }
         }
@@ -386,12 +387,6 @@ struct iOSMainView: View {
     
     private var shortcutItemsGridView: some View {
         VStack {
-            HStack {
-                Text("Shortcuts")
-                    .font(.system(size: 18.0, weight: .medium))
-                    .padding([.vertical, .leading], 4.0)
-                Spacer()
-            }
             grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
                 .padding(.bottom, 24)
             ScrollView(.horizontal) {
@@ -405,7 +400,7 @@ struct iOSMainView: View {
                 }
             }
         }
-        .padding(.bottom, 10)
+        .padding(.all, 16)
     }
     
     func findLargestPage(in shortcuts: [ShortcutObject]) -> Int {
