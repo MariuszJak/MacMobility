@@ -432,7 +432,17 @@ struct iOSMainView: View {
                                     }
                             }
                         case .webpage:
-                            if let data = test.browser?.icon {
+                            if let data = test.imageData,
+                               let image = UIImage(data: data) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .cornerRadius(20.0)
+                                    .frame(width: 80, height: 80)
+                                    .onTapGesture {
+                                        connectionManager.send(shortcut: test)
+                                    }
+                            } else if let data = test.browser?.icon {
                                 Image(data)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
