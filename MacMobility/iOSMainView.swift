@@ -382,6 +382,8 @@ struct iOSMainView: View {
         }
     }
     
+    @State var currentPage: Int = 1
+    
     private var shortcutItemsGridView: some View {
         VStack {
             HStack {
@@ -390,15 +392,30 @@ struct iOSMainView: View {
                     .padding([.vertical, .leading], 4.0)
                 Spacer()
             }
-            grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts })
+            grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
+                .padding(.bottom, 24)
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(1..<findLargestPage(in: connectionManager.shortcutsList.flatMap(\.shortcuts)) + 1, id: \.self) { page in
+                        Button("Page \(page)") {
+                            currentPage = page
+                        }
+                        .padding()
+                    }
+                }
+            }
         }
         .padding(.bottom, 10)
+    }
+    
+    func findLargestPage(in shortcuts: [ShortcutObject]) -> Int {
+        return shortcuts.max(by: { $0.page < $1.page })?.page ?? 1
     }
     
     func grid(shortcuts: [ShortcutObject]) -> some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 6) {
-                ForEach(0..<42) { index in
+                ForEach(0..<21) { index in
                     if let test = shortcuts.first(where: { $0.index == index }) {
                         switch test.type {
                         case .shortcut:
@@ -468,6 +485,7 @@ struct iOSMainView: View {
             }
             .padding(.horizontal)
         }
+        .scrollDisabled(true)
     }
     
     @ViewBuilder

@@ -170,6 +170,7 @@ public enum ShortcutType: String, Codable {
 
 public struct ShortcutObject: Identifiable, Codable {
     public let index: Int?
+    public var page: Int
     public let id: String
     public let title: String
     public let path: String?
@@ -179,8 +180,9 @@ public struct ShortcutObject: Identifiable, Codable {
     public let imageData: Data?
     public var browser: Browsers?
     
-    public init(type: ShortcutType, index: Int? = nil, path: String? = nil, id: String, title: String, color: String? = nil, faviconLink: String? = nil, browser: Browsers? = nil, imageData: Data? = nil) {
+    public init(type: ShortcutType, page: Int, index: Int? = nil, path: String? = nil, id: String, title: String, color: String? = nil, faviconLink: String? = nil, browser: Browsers? = nil, imageData: Data? = nil) {
         self.type = type
+        self.page = page
         self.index = index
         self.path = path
         self.id = id
