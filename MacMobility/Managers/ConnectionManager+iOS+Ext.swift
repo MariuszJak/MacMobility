@@ -166,6 +166,11 @@ public enum ShortcutType: String, Codable {
     case shortcut
     case app
     case webpage
+    case utility
+}
+
+public enum UtilityType: String, Codable {
+    case commandline
 }
 
 public struct ShortcutObject: Identifiable, Codable {
@@ -179,8 +184,10 @@ public struct ShortcutObject: Identifiable, Codable {
     public let type: ShortcutType
     public let imageData: Data?
     public var browser: Browsers?
+    public var scriptCode: String?
+    public var utilityType: UtilityType?
     
-    public init(type: ShortcutType, page: Int, index: Int? = nil, path: String? = nil, id: String, title: String, color: String? = nil, faviconLink: String? = nil, browser: Browsers? = nil, imageData: Data? = nil) {
+    public init(type: ShortcutType, page: Int, index: Int? = nil, path: String? = nil, id: String, title: String, color: String? = nil, faviconLink: String? = nil, browser: Browsers? = nil, imageData: Data? = nil, scriptCode: String? = nil, utilityType: UtilityType? = nil) {
         self.type = type
         self.page = page
         self.index = index
@@ -191,6 +198,8 @@ public struct ShortcutObject: Identifiable, Codable {
         self.imageData = imageData
         self.faviconLink = faviconLink
         self.browser = browser
+        self.scriptCode = scriptCode
+        self.utilityType = utilityType
     }
 }
 

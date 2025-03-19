@@ -431,7 +431,7 @@ struct iOSMainView: View {
                             .onTapGesture {
                                 connectionManager.send(shortcut: test)
                             }
-                        case .app:
+                        case .app, .utility:
                             if let data = test.imageData,
                                let image = UIImage(data: data) {
                                 Image(uiImage: image)
