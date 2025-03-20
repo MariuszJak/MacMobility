@@ -171,6 +171,7 @@ public enum ShortcutType: String, Codable {
 
 public enum UtilityType: String, Codable {
     case commandline
+    case multiselection
 }
 
 public struct ShortcutObject: Identifiable, Codable {
@@ -186,8 +187,12 @@ public struct ShortcutObject: Identifiable, Codable {
     public var browser: Browsers?
     public var scriptCode: String?
     public var utilityType: UtilityType?
+    public var objects: [ShortcutObject]?
     
-    public init(type: ShortcutType, page: Int, index: Int? = nil, path: String? = nil, id: String, title: String, color: String? = nil, faviconLink: String? = nil, browser: Browsers? = nil, imageData: Data? = nil, scriptCode: String? = nil, utilityType: UtilityType? = nil) {
+    public init(type: ShortcutType, page: Int, index: Int? = nil, path: String? = nil, id: String,
+                title: String, color: String? = nil, faviconLink: String? = nil,
+                browser: Browsers? = nil, imageData: Data? = nil, scriptCode: String? = nil,
+                utilityType: UtilityType? = nil, objects: [ShortcutObject]? = nil) {
         self.type = type
         self.page = page
         self.index = index
@@ -200,6 +205,7 @@ public struct ShortcutObject: Identifiable, Codable {
         self.browser = browser
         self.scriptCode = scriptCode
         self.utilityType = utilityType
+        self.objects = objects
     }
 }
 
