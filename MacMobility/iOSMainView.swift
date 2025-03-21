@@ -480,7 +480,6 @@ struct iOSMainView: View {
             }
             .padding(.horizontal)
         }
-        .scrollDisabled(true)
     }
     
     @ViewBuilder
