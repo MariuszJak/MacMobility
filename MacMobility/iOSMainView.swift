@@ -43,6 +43,8 @@ struct WorkSpaceControlItem: Identifiable {
 
 struct iOSMainView: View {
     @UserDefault(Preferences.Key.didSeenDependencyScreens) var didSeenDependencyScreens = false
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @State var currentPage: Int = 1
     @StateObject var connectionManager = ConnectionManager()
     @State var startPos: CGPoint = .zero
     @State var isSwipping = true
@@ -62,7 +64,15 @@ struct iOSMainView: View {
         ]
     }
     var spacing: CGFloat = 12.0
-
+    var isIPad: Bool {
+        UIDevice.current.localizedModel.contains("iPad")
+    }
+    var itemsSize: CGFloat {
+        isIPad ? 140 : 80
+    }
+    var itemsSpacing: CGFloat {
+        isIPad ? 24 : 6
+    }
     var body: some View {
         VStack {
             qrCodeScannerButtonView
@@ -77,7 +87,6 @@ struct iOSMainView: View {
                         disconnectButtonView
                     }
                 }
-                
             }
         }
         .alert("Received invitation from \(connectionManager.receivedInviteFrom?.displayName ?? "")",
@@ -108,6 +117,93 @@ struct iOSMainView: View {
         .ignoresSafeArea()
         .animation(.easeInOut, value: $connectionManager.pairingStatus.wrappedValue)
         .padding(.horizontal)
+    }
+    
+    private var shortcutItemsGridView: some View {
+        VStack {
+            grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
+                .if(!isIPad) {
+                    $0.padding(.bottom, 42.0)
+                }
+        }
+        .padding(.all, 16)
+    }
+    
+    func findLargestPage(in shortcuts: [ShortcutObject]) -> Int {
+        return shortcuts.max(by: { $0.page < $1.page })?.page ?? 1
+    }
+    
+    func grid(shortcuts: [ShortcutObject]) -> some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: itemsSize))], spacing: itemsSpacing) {
+            ForEach(0..<21) { index in
+                if let test = shortcuts.first(where: { $0.index == index }) {
+                    switch test.type {
+                    case .shortcut:
+                        VStack {
+                            ZStack {
+                                Text(test.title)
+                                    .font(.system(size: 12))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.all, 3)
+                            }
+                        }
+                        .frame(width: itemsSize, height: itemsSize)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20.0)
+                                .fill(Color(hex: test.color ?? ""))
+                            
+                        )
+                        .onTapGesture {
+                            connectionManager.send(shortcut: test)
+                        }
+                    case .app, .utility:
+                        if let data = test.imageData,
+                           let image = UIImage(data: data) {
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .cornerRadius(20.0)
+                                .frame(width: itemsSize, height: itemsSize)
+                                .onTapGesture {
+                                    connectionManager.send(shortcut: test)
+                                }
+                        }
+                    case .webpage:
+                        if let data = test.imageData,
+                           let image = UIImage(data: data) {
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .cornerRadius(20.0)
+                                .frame(width: itemsSize, height: itemsSize)
+                                .onTapGesture {
+                                    connectionManager.send(shortcut: test)
+                                }
+                        } else if let data = test.browser?.icon {
+                            Image(data)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .cornerRadius(20.0)
+                                .frame(width: itemsSize, height: itemsSize)
+                                .onTapGesture {
+                                    connectionManager.send(shortcut: test)
+                                }
+                        }
+                    }
+                    
+                } else {
+                    VStack {
+                    }
+                    .frame(width: itemsSize, height: itemsSize)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20.0)
+                            .fill(.gray.opacity(0.2))
+                        
+                    )
+                }
+            }
+            .padding(.horizontal)
+        }
     }
     
     func handlePairingStatus(with pairingStatus: PairingStatus) {
@@ -156,50 +252,20 @@ struct iOSMainView: View {
         }
     }
     
-    @ViewBuilder
-    private var workspaceControls: some View {
-        if connectionManager.pairingStatus == .paired {
-            VStack(alignment: .leading, spacing: spacing) {
-                Divider()
-                HStack {
-                    Text("Workspaces")
-                    Spacer()
-                    Button(showsWorkspaces ? "Hide" : "Show") {
-                        showsWorkspaces.toggle()
-                    }
-                }
-                HStack(spacing: spacing) {
-                    ForEach(workspaceControlItems) { item in
-                        VStack(spacing: .zero) {
-                            if let image = item.icon {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .cornerRadius(6.0)
-                                    .frame(width: 74.0, height: 74.0)
-                                    .opacity(0.8)
-                                Text(item.title)
-                                    .font(.caption2)
-                            }
-                        }
-                        .onTapGesture {
-                            item.action()
-                        }
-                    }
-                    Spacer()
-                }
-                .opacity(showsWorkspaces ? 1.0 : 0.0)
-                .if(!showsWorkspaces) {
-                    $0.frame(height: 0.0)
-                }
-                Divider()
-                    .padding(.bottom, 6.0)
-            }
-        }
-    }
-    
     private var disconnectButtonView: some View {
         HStack {
+            if connectionManager.pairingStatus == .paired {
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(1..<findLargestPage(in: connectionManager.shortcutsList.flatMap(\.shortcuts)) + 1, id: \.self) { page in
+                            Button("Page \(page)") {
+                                currentPage = page
+                            }
+                            .padding()
+                        }
+                    }
+                }
+            }
             Spacer()
             VStack {
                 if connectionManager.pairingStatus == .paired {
@@ -207,10 +273,10 @@ struct iOSMainView: View {
                         showsDisconnectAlert = true
                     }
                     .foregroundStyle(.red)
-                    .padding(.bottom, 32)
                 }
             }
         }
+        .padding([.horizontal, .bottom], 32)
         .alert("Are you sure you want to disconnect?",
                isPresented: $showsDisconnectAlert) {
             HStack {
@@ -251,254 +317,5 @@ struct iOSMainView: View {
             }
             .frame(height: UIScreen.main.bounds.height - 106.0)
         }
-    }
-    
-    private var appGridView: some View {
-        VStack {
-            HStack {
-                Text("Running apps")
-                    .font(.system(size: 18.0, weight: .medium))
-                    .padding([.vertical, .leading], 4.0)
-                Spacer()
-            }
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading) {
-                    ForEach($connectionManager.appList) { item in
-                        HStack(alignment: .top) {
-                            ForEach(Array(item.apps.wrappedValue.enumerated()), id: \.offset) { object in
-                                VStack {
-                                    if let data = object.element.imageData,
-                                       let image = UIImage(data: data) {
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .cornerRadius(6.0)
-                                            .frame(width: 62.0, height: 62.0)
-                                        Text(object.element.title)
-                                            .font(.caption2)
-                                            .frame(maxWidth: 60.0)
-                                            .multilineTextAlignment(.center)
-                                    } else {
-                                        Image("Empty")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .cornerRadius(6.0)
-                                            .frame(width: 74.0, height: 74.0)
-                                        Text(object.element.title)
-                                            .font(.caption2)
-                                            .frame(maxWidth: 60.0)
-                                            .multilineTextAlignment(.center)
-                                    }
-                                }
-                                .onTapGesture {
-                                    connectionManager.send(appName: object.element.title)
-                                }
-                            }
-                            Spacer()
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    private var webItemsGridView: some View {
-        VStack {
-            HStack {
-                Text("Web links")
-                    .font(.system(size: 18.0, weight: .medium))
-                    .padding([.vertical, .leading], 4.0)
-                Spacer()
-            }
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading) {
-                    ForEach($connectionManager.webpagesList) { item in
-                        HStack(alignment: .top) {
-                            ForEach(Array(item.webpages.wrappedValue.enumerated()), id: \.offset) { object in
-                                Button {
-                                    connectionManager.send(webpageLink: object.element)
-                                } label: {
-                                    VStack {
-                                        if let favlink = object.element.faviconLink, let url = URL(string: favlink) {
-                                            SwiftlyImage(url: url, placeholder: .init(named: "Empty"))
-                                                .cornerRadius(6.0)
-                                                .frame(width: 74, height: 74)
-                                        } else {
-                                            Image(object.element.browser.icon)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .cornerRadius(6.0)
-                                                .frame(width: 74, height: 74)
-                                        }
-                                        Text(object.element.webpageTitle)
-                                            .foregroundStyle(Color.white)
-                                            .font(.caption2)
-                                            .frame(maxWidth: 74)
-                                            .multilineTextAlignment(.center)
-                                    }
-                                }
-                            }
-                            Spacer()
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    private var workspaceItemsGridView: some View {
-        VStack {
-            HStack {
-                Text("Workspaces")
-                    .font(.system(size: 18.0, weight: .medium))
-                    .padding([.vertical, .leading], 4.0)
-                Spacer()
-            }
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack {
-                    ForEach($connectionManager.workspacesList) { item in
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 200))], spacing: 6) {
-                                ForEach(Array(item.workspaces.wrappedValue.enumerated()), id: \.offset) { object in
-                                    VStack(alignment: .leading){
-                                        Text(object.element.title)
-                                            .font(.caption2)
-                                            .multilineTextAlignment(.center)
-                                        grid(for: object.element.apps)
-                                        Button("Launch All") {
-                                            connectionManager.send(workspace: object.element)
-                                        }
-                                    }
-                                    .frame(width: 200)
-                                    .padding(.all, 10.0)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .fill(Color.gray.opacity(0.1))
-                                    )
-                                }
-                                Spacer()
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    @State var currentPage: Int = 1
-    
-    private var shortcutItemsGridView: some View {
-        VStack {
-            grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
-                .padding(.bottom, 24)
-            ScrollView(.horizontal) {
-                HStack {
-                    ForEach(1..<findLargestPage(in: connectionManager.shortcutsList.flatMap(\.shortcuts)) + 1, id: \.self) { page in
-                        Button("Page \(page)") {
-                            currentPage = page
-                        }
-                        .padding()
-                    }
-                }
-            }
-        }
-        .padding(.all, 16)
-    }
-    
-    func findLargestPage(in shortcuts: [ShortcutObject]) -> Int {
-        return shortcuts.max(by: { $0.page < $1.page })?.page ?? 1
-    }
-    
-    func grid(shortcuts: [ShortcutObject]) -> some View {
-        ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 6) {
-                ForEach(0..<21) { index in
-                    if let test = shortcuts.first(where: { $0.index == index }) {
-                        switch test.type {
-                        case .shortcut:
-                            VStack {
-                                ZStack {
-                                    Text(test.title)
-                                        .font(.system(size: 12))
-                                        .multilineTextAlignment(.center)
-                                        .padding(.all, 3)
-                                }
-                            }
-                            .frame(width: 80, height: 80)
-                            .background(
-                                RoundedRectangle(cornerRadius: 20.0)
-                                    .fill(Color(hex: test.color ?? ""))
-                                
-                            )
-                            .onTapGesture {
-                                connectionManager.send(shortcut: test)
-                            }
-                        case .app, .utility:
-                            if let data = test.imageData,
-                               let image = UIImage(data: data) {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .cornerRadius(20.0)
-                                    .frame(width: 80, height: 80)
-                                    .onTapGesture {
-                                        connectionManager.send(shortcut: test)
-                                    }
-                            }
-                        case .webpage:
-                            if let data = test.imageData,
-                               let image = UIImage(data: data) {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .cornerRadius(20.0)
-                                    .frame(width: 80, height: 80)
-                                    .onTapGesture {
-                                        connectionManager.send(shortcut: test)
-                                    }
-                            } else if let data = test.browser?.icon {
-                                Image(data)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .cornerRadius(20.0)
-                                    .frame(width: 80, height: 80)
-                                    .onTapGesture {
-                                        connectionManager.send(shortcut: test)
-                                    }
-                            }
-                        }
-                        
-                    } else {
-                        VStack {
-                        }
-                        .frame(width: 80, height: 80)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20.0)
-                                .fill(.gray.opacity(0.2))
-                            
-                        )
-                    }
-                }
-            }
-            .padding(.horizontal)
-        }
-    }
-    
-    @ViewBuilder
-    func grid(for apps: [AppSendableInfo]) -> some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 50))], spacing: 4) {
-            ForEach(apps) { app in
-                if let data = app.imageData,
-                   let image = UIImage(data: data) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .cornerRadius(6.0)
-                        .frame(width: 62.0, height: 62.0)
-                        .onTapGesture {
-                            connectionManager.send(app: app)
-                        }
-                }
-            }
-        }
-        .padding(.bottom, 20.0)
     }
 }
