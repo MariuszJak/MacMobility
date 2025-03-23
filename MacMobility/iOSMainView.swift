@@ -64,6 +64,9 @@ struct iOSMainView: View {
         ]
     }
     var spacing: CGFloat = 12.0
+    var regularFontSize: CGFloat {
+        isIPad ? 24 : 12
+    }
     var isIPad: Bool {
         UIDevice.current.localizedModel.contains("iPad")
     }
@@ -119,14 +122,21 @@ struct iOSMainView: View {
         .padding(.horizontal)
     }
     
+    @ViewBuilder
     private var shortcutItemsGridView: some View {
-        VStack {
-            grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
-                .if(!isIPad) {
-                    $0.padding(.bottom, 42.0)
-                }
+        if isIPad {
+            VStack {
+                grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
+            }
+            .padding(.all, 16)
+        } else {
+            VStack {
+                grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
+                    .padding(.horizontal, 32)
+                Spacer()
+            }
+            .padding(.all, 16)
         }
-        .padding(.all, 16)
     }
     
     func findLargestPage(in shortcuts: [ShortcutObject]) -> Int {
@@ -139,55 +149,107 @@ struct iOSMainView: View {
                 if let test = shortcuts.first(where: { $0.index == index }) {
                     switch test.type {
                     case .shortcut:
-                        VStack {
-                            ZStack {
-                                Text(test.title)
-                                    .font(.system(size: 12))
-                                    .multilineTextAlignment(.center)
-                                    .padding(.all, 3)
-                            }
-                        }
-                        .frame(width: itemsSize, height: itemsSize)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20.0)
-                                .fill(Color(hex: test.color ?? ""))
-                            
-                        )
-                        .onTapGesture {
+                        AnimatedButton {
                             connectionManager.send(shortcut: test)
+                        } label: {
+                            VStack {
+                                ZStack {
+                                    if let data = test.imageData,
+                                       let image = UIImage(data: data) {
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .cornerRadius(20.0)
+                                            .frame(width: itemsSize, height: itemsSize)
+                                    }
+                                    Text(test.title)
+                                        .font(.system(size: regularFontSize))
+                                        .foregroundStyle(Color.white)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.all, 3)
+                                        .stroke(color: .black)
+                                }
+                            }
+                            .cornerRadius(20.0)
+                            .frame(width: itemsSize, height: itemsSize)
                         }
-                    case .app, .utility:
+                        .hoverEffect(.highlight)
+                   case .app:
                         if let data = test.imageData,
                            let image = UIImage(data: data) {
-                            Image(uiImage: image)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .cornerRadius(20.0)
-                                .frame(width: itemsSize, height: itemsSize)
-                                .onTapGesture {
-                                    connectionManager.send(shortcut: test)
+                            AnimatedButton {
+                                connectionManager.send(shortcut: test)
+                            } label: {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .cornerRadius(20.0)
+                                    .frame(width: itemsSize, height: itemsSize)
+                            }
+                            .hoverEffect(.highlight)
+                        }
+                    case .utility:
+                        if let data = test.imageData,
+                           let image = UIImage(data: data) {
+                            AnimatedButton {
+                                connectionManager.send(shortcut: test)
+                            } label: {
+                                ZStack {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .cornerRadius(20.0)
+                                        .frame(width: itemsSize, height: itemsSize)
+                                    Text(test.title)
+                                        .font(.system(size: regularFontSize))
+                                        .foregroundStyle(Color.white)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.all, 3)
+                                        .stroke(color: .black)
                                 }
+                            }
+                            .hoverEffect(.highlight)
                         }
                     case .webpage:
                         if let data = test.imageData,
                            let image = UIImage(data: data) {
-                            Image(uiImage: image)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .cornerRadius(20.0)
-                                .frame(width: itemsSize, height: itemsSize)
-                                .onTapGesture {
-                                    connectionManager.send(shortcut: test)
+                            AnimatedButton {
+                                connectionManager.send(shortcut: test)
+                            } label: {
+                                ZStack {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .cornerRadius(20.0)
+                                        .frame(width: itemsSize, height: itemsSize)
+                                    Text(test.title)
+                                        .font(.system(size: regularFontSize))
+                                        .foregroundStyle(Color.white)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.all, 3)
+                                        .stroke(color: .black)
                                 }
+                            }
+                            .hoverEffect(.highlight)
                         } else if let data = test.browser?.icon {
-                            Image(data)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .cornerRadius(20.0)
-                                .frame(width: itemsSize, height: itemsSize)
-                                .onTapGesture {
-                                    connectionManager.send(shortcut: test)
+                            AnimatedButton {
+                                connectionManager.send(shortcut: test)
+                            } label: {
+                                ZStack {
+                                    Image(data)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .cornerRadius(20.0)
+                                        .frame(width: itemsSize, height: itemsSize)
+                                    Text(test.title)
+                                        .font(.system(size: regularFontSize))
+                                        .foregroundStyle(Color.white)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.all, 3)
+                                        .stroke(color: .black)
                                 }
+                            }
+                            .hoverEffect(.highlight)
                         }
                     }
                     
@@ -317,5 +379,15 @@ struct iOSMainView: View {
             }
             .frame(height: UIScreen.main.bounds.height - 106.0)
         }
+    }
+}
+
+extension UIImage {
+    func resizeImage(targetSize: CGSize) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        let resizedImage = renderer.image { (context) in
+            self.draw(in: CGRect(origin: .zero, size: targetSize))
+        }
+        return resizedImage
     }
 }

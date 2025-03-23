@@ -29,6 +29,7 @@
 		C097751F2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C097751E2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift */; };
 		C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */; };
 		C0BDB29D2BA3AF5800B36D19 /* Swiftly in Frameworks */ = {isa = PBXBuildFile; productRef = C0BDB29C2BA3AF5800B36D19 /* Swiftly */; };
+		C0EAFC1D2D9061A400044947 /* AnimatedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		C097751E2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConnectionManager+iOS+Ext.swift"; sourceTree = "<group>"; };
 		C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionSenable.swift; sourceTree = "<group>"; };
 		C09775222B5C259000F4FFE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 				C09775222B5C259000F4FFE6 /* Info.plist */,
 				C09775152B5C234F00F4FFE6 /* Managers */,
 				C09775102B5C233000F4FFE6 /* Extensions */,
+				C0EAFC1B2D90619A00044947 /* Views */,
 				C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */,
 				C09775182B5C239600F4FFE6 /* iOSMainView.swift */,
 				C097751A2B5C239B00F4FFE6 /* QRCodeScanner.swift */,
@@ -204,6 +207,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C0EAFC1B2D90619A00044947 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -346,6 +357,7 @@
 			files = (
 				C09775172B5C235700F4FFE6 /* ConnectionManager.swift in Sources */,
 				C09775132B5C233B00F4FFE6 /* String+Ext.swift in Sources */,
+				C0EAFC1D2D9061A400044947 /* AnimatedButton.swift in Sources */,
 				C09775142B5C233B00F4FFE6 /* Array+Ext.swift in Sources */,
 				C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */,
 				C064BA5D2D876EF60091E2BE /* UIColor+Ext.swift in Sources */,
@@ -532,7 +544,6 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.8;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -571,7 +582,6 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.8;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
