@@ -67,7 +67,8 @@ struct AnimatedButton<Label: View>: View {
         withAnimation {
             isLoading = true
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+        action()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             withAnimation {
                 isLoading = false
                 showSuccess = true
@@ -75,7 +76,6 @@ struct AnimatedButton<Label: View>: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 withAnimation {
                     showSuccess = false
-                    action()
                 }
             }
         }

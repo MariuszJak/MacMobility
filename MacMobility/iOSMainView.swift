@@ -53,16 +53,7 @@ struct iOSMainView: View {
     @State private var trigger = false
     @State private var showsWorkspaces = false
     @State private var showsDisconnectAlert = false
-    var workspaceControlItems: [WorkSpaceControlItem] {
-        [
-            .init(title: "Prev", icon: .init(named: "prev-btn"), action: {
-                connectionManager.send(workspace: .prev)
-            }),
-            .init(title: "Next", icon: .init(named: "next-btn"), action: {
-                connectionManager.send(workspace: .next)
-            })
-        ]
-    }
+
     var spacing: CGFloat = 12.0
     var regularFontSize: CGFloat {
         isIPad ? 24 : 12
@@ -76,6 +67,7 @@ struct iOSMainView: View {
     var itemsSpacing: CGFloat {
         isIPad ? 24 : 6
     }
+        
     var body: some View {
         VStack {
             qrCodeScannerButtonView
@@ -89,6 +81,17 @@ struct iOSMainView: View {
                         Spacer()
                         disconnectButtonView
                     }
+                }
+            }
+        }
+        .alert("Test", isPresented: $connectionManager.receivedAlert) {
+            Button("Close") {
+                connectionManager.receivedAlert = false
+            }
+        } message: {
+            VStack {
+                if let description = connectionManager.alert?.message {
+                    Text(description)
                 }
             }
         }
@@ -182,6 +185,7 @@ struct iOSMainView: View {
                             } label: {
                                 Image(uiImage: image)
                                     .resizable()
+                                    .scaleEffect(1.2)
                                     .aspectRatio(contentMode: .fill)
                                     .cornerRadius(20.0)
                                     .frame(width: itemsSize, height: itemsSize)
@@ -238,6 +242,7 @@ struct iOSMainView: View {
                                 ZStack {
                                     Image(data)
                                         .resizable()
+                                        .scaleEffect(1.1)
                                         .aspectRatio(contentMode: .fill)
                                         .cornerRadius(20.0)
                                         .frame(width: itemsSize, height: itemsSize)
@@ -245,14 +250,12 @@ struct iOSMainView: View {
                                         .font(.system(size: regularFontSize))
                                         .foregroundStyle(Color.white)
                                         .multilineTextAlignment(.center)
-                                        .padding(.all, 3)
                                         .stroke(color: .black)
                                 }
                             }
                             .hoverEffect(.highlight)
                         }
                     }
-                    
                 } else {
                     VStack {
                     }
@@ -318,12 +321,13 @@ struct iOSMainView: View {
         HStack {
             if connectionManager.pairingStatus == .paired {
                 ScrollView(.horizontal) {
-                    HStack {
+                    HStack(spacing: 3.0) {
                         ForEach(1..<findLargestPage(in: connectionManager.shortcutsList.flatMap(\.shortcuts)) + 1, id: \.self) { page in
-                            Button("Page \(page)") {
+                            PrimaryButton(title: "Page: \(page)", isSelected: page == currentPage) {
                                 currentPage = page
                             }
-                            .padding()
+                            .animation(.easeInOut, value: currentPage)
+//                            .padding(.vertical)
                         }
                     }
                 }
@@ -331,14 +335,19 @@ struct iOSMainView: View {
             Spacer()
             VStack {
                 if connectionManager.pairingStatus == .paired {
-                    Button("Disconnect") {
+                    Button {
                         showsDisconnectAlert = true
+                    } label: {
+                        Image(.exit)
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(Color.gray)
+                            .frame(width: 32, height: 32)
                     }
-                    .foregroundStyle(.red)
                 }
             }
         }
-        .padding([.horizontal, .bottom], 32)
+        .padding([.horizontal, .bottom], 48)
         .alert("Are you sure you want to disconnect?",
                isPresented: $showsDisconnectAlert) {
             HStack {
@@ -389,5 +398,27 @@ extension UIImage {
             self.draw(in: CGRect(origin: .zero, size: targetSize))
         }
         return resizedImage
+    }
+}
+
+struct PrimaryButton: View {
+    var title: String
+    var isSelected: Bool
+    var action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 2) {
+                Text(title)
+                    .font(.system(size: 16.0, weight: .bold))
+                    .foregroundColor(.black)
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(RoundedRectangle(cornerRadius: 12).fill(isSelected ? .white : .gray))
+            .shadow(radius: 2)
+            .scaleEffect(isSelected ? 1.0 : 0.85)
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }

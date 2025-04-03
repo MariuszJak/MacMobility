@@ -27,6 +27,7 @@ class ConnectionManager: NSObject, ObservableObject {
     @Published var availablePeer: MCPeerID?
     @Published var connectedPeerName: String?
     @Published var receivedInvite: Bool = false
+    @Published var receivedAlert: Bool = false
     @Published var receivedInviteFrom: MCPeerID?
     @Published var invitationHandler: ((Bool, MCSession?) -> Void)?
     @Published var selectedWorkspace: WorkspaceControl?
@@ -52,6 +53,7 @@ class ConnectionManager: NSObject, ObservableObject {
     @Published public var webpagesList: [WebPageListData] = []
     @Published public var workspacesList: [WorkspacesListData] = []
     @Published public var shortcutsList: [ShortcutsListData] = []
+    @Published public var alert: AlertMessage?
     public var rowCount = 4
 
     override init() {

@@ -248,8 +248,25 @@ extension ConnectionManager {
                 guard shortcuts.shortcutTitle == "shortcutTitle" else { return }
                 self.shortcutsList = [ShortcutsListData(shortcuts: shortcuts.shortcuts)]
             }
+            
+            if let alert = try? JSONDecoder().decode(AlertMessageResponse.self, from: data) {
+                guard alert.alertTitle == "alertTitle" else { return }
+                self.alert = alert.message
+                self.receivedAlert = true
+            }
         }
     }
+}
+
+struct AlertMessageResponse: Codable {
+    let alertTitle: String
+    let message: AlertMessage
+}
+
+
+struct AlertMessage: Codable, Equatable {
+    let title: String
+    let message: String
 }
 
 public enum Browsers: String, CaseIterable, Identifiable, Codable {
