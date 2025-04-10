@@ -34,6 +34,7 @@ struct QRCodeScanner: UIViewControllerRepresentable {
 }
 
 class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+    let spinner = UIActivityIndicatorView(style: .medium)
     let captureSession = AVCaptureSession()
     lazy var videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
     var completion: (String) -> Void
@@ -46,22 +47,50 @@ class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObje
     @available(*, unavailable)
     required init?(coder: NSCoder) { nil }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Force vertical orientation (portrait)
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+        UIViewController.attemptRotationToDeviceOrientation()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Force horizontal orientation (landscapeRight as an example)
+        UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
+        UIViewController.attemptRotationToDeviceOrientation()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        guard let captureDevice = AVCaptureDevice.default(for: AVMediaType.video) else { return }
-        guard let input = try? AVCaptureDeviceInput(device: captureDevice) else { return }
-        captureSession.addInput(input)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.hidesWhenStopped = true
+        view.addSubview(spinner)
         
-        let captureMetadataOutput = AVCaptureMetadataOutput()
-        captureSession.addOutput(captureMetadataOutput)
-        captureMetadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-        captureMetadataOutput.metadataObjectTypes = [AVMetadataObject.ObjectType.qr]
+        // Center it in the view
+        NSLayoutConstraint.activate([
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
         
-        videoPreviewLayer.frame = view.layer.bounds
-        view.layer.addSublayer(videoPreviewLayer)
-        DispatchQueue.global(qos: .background).async {
-            self.captureSession.startRunning()
+        spinner.startAnimating()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            guard let captureDevice = AVCaptureDevice.default(for: AVMediaType.video) else { return }
+            guard let input = try? AVCaptureDeviceInput(device: captureDevice) else { return }
+            self.captureSession.addInput(input)
+            
+            let captureMetadataOutput = AVCaptureMetadataOutput()
+            self.captureSession.addOutput(captureMetadataOutput)
+            captureMetadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+            captureMetadataOutput.metadataObjectTypes = [AVMetadataObject.ObjectType.qr]
+            
+            self.videoPreviewLayer.frame = self.view.layer.bounds
+            self.view.layer.addSublayer(self.videoPreviewLayer)
+            DispatchQueue.global(qos: .background).async {
+                self.captureSession.startRunning()
+            }
         }
     }
     

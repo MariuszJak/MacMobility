@@ -18,60 +18,70 @@ struct MacOSAppDependencyScreen: View {
     var body: some View {
         VStack {
             TabView {
+                initialPage
                 firstPage
-                secondPage
                 lastPage
             }
             .tabViewStyle(.page)
         }
     }
     
-    var firstPage: some View {
+    var initialPage: some View {
         VStack(alignment: .center, spacing: 16.0) {
             Spacer()
-            Image("macosapp")
-            Spacer()
-            Divider()
-            Text("For this app to work, you need to download MacOS companion application.")
-                .font(.system(size: 12.0))
-                .foregroundStyle(.white)
-            Spacer()
+                .frame(height: 56.0)
+            OrientationStack {
+                Image(.logo)
+                    .resizable()
+                    .frame(width: 200, height: 200)
+                    .padding()
+                VStack(alignment: .leading) {
+                    Text("Welcome to MacMobility!")
+                        .font(.system(size: 22, weight: .bold))
+                        .padding(.bottom, 6.0)
+                    Text("Take control of your MacOS with MacMobility app!")
+                        .font(.system(size: 16, weight: .regular))
+                        .foregroundStyle(Color.gray)
+                }
+            }
         }
         .padding()
     }
     
-    var secondPage: some View {
+    var firstPage: some View {
         VStack(alignment: .center, spacing: 16.0) {
             Spacer()
-            Image("githubpage")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-            Spacer()
-            Divider()
-            Button("Copy url to github page.") {
-                copyGithubPageToClipboard()
+                .frame(height: 56.0)
+            OrientationStack {
+                Image("macosapp")
+                    .padding()
+                VStack(alignment: .leading) {
+                    Text("MacOS companion application")
+                        .font(.system(size: 22, weight: .bold))
+                        .padding(.bottom, 6.0)
+                    Text("For this application to work, you need to download MacOS companion application.\nIt is available on the webpage: www.coderblocks.eu/macmobility. Download it and install on your Mac, and then you can continue.")
+                        .font(.system(size: 16, weight: .regular))
+                        .foregroundStyle(Color.gray)
+                }
             }
-            .font(.system(size: 12.0))
-            .foregroundStyle(.white)
-            Spacer()
         }
         .padding()
     }
     
     var lastPage: some View {
         VStack(alignment: .center, spacing: 16.0) {
-            Text("Everythnig installed and ready to go?")
-            Button("Close") {
+            Text("Everything installed and ready to go?")
+                .font(.system(size: 22, weight: .bold))
+                .padding(.bottom, 2.0)
+            Text("Now you are able to use MacMobility app on your Mac!")
+                .font(.system(size: 16, weight: .regular))
+                .foregroundStyle(Color.gray)
+                .padding(.bottom, 22.0)
+            PrimaryButton(title: "Start!", isSelected: true) {
                 dismiss()
             }
-            .font(.system(size: 12.0))
-            .foregroundStyle(.white)
+            .frame(width: 200.0)
         }
-    }
-    
-    func copyGithubPageToClipboard() {
-        let pasteboard = UIPasteboard.general
-        pasteboard.string = "https://github.com/MariuszJak/MagicTrackpad"
     }
 }
 
@@ -118,5 +128,27 @@ final class UserDefault<T>: NSObject {
 
     deinit {
         userDefaults.removeObserver(self, forKeyPath: key, context: &observerContext)
+    }
+}
+
+struct OrientationStack<Content: View>: View {
+    let content: () -> Content
+
+    init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            let isLandscape = geometry.size.width > geometry.size.height
+
+            Group {
+                if isLandscape {
+                    HStack { content() }
+                } else {
+                    VStack { content() }
+                }
+            }
+        }
     }
 }

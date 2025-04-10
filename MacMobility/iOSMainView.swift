@@ -370,20 +370,26 @@ struct iOSMainView: View {
                     VStack {
                         Image("ios-qr-scanner")
                             .resizable()
-                            .frame(width: 56.0, height: 56.0)
+                            .frame(width: 80, height: 80.0)
                         Text("Tap to scan QR code")
-                            .font(.system(size: 12.0))
+                            .font(.system(size: 16.0))
                             .foregroundStyle(.white)
                     }
                 }
                 Spacer()
-                Button {
-                    showDependencyScreen = true
-                } label: {
-                    Text("Do you have MacOS app? Tap to download")
-                        .font(.system(size: 12.0))
-                        .foregroundStyle(.white)
-                        .opacity(0.6)
+                HStack {
+                    Text("Do you have MacOS app? ")
+                        .font(.system(size: 12, weight: .regular))
+                        .foregroundColor(.white)
+                    Text("Tap to download")
+                        .font(.system(size: 12, weight: .regular))
+                        .foregroundColor(.white)
+                        .underline()
+                        .onTapGesture {
+                            if let url = URL(string: "https://www.coderblocks.eu/macmobility") {
+                                UIApplication.shared.open(url)
+                            }
+                        }
                 }
             }
             .frame(height: UIScreen.main.bounds.height - 106.0)
