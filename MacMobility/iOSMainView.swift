@@ -44,6 +44,7 @@ struct WorkSpaceControlItem: Identifiable {
 struct iOSMainView: View {
     @UserDefault(Preferences.Key.didSeenDependencyScreens) var didSeenDependencyScreens = false
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.colorScheme) var colorScheme
     @State var currentPage: Int = 1
     @StateObject var connectionManager = ConnectionManager()
     @State var startPos: CGPoint = .zero
@@ -65,7 +66,7 @@ struct iOSMainView: View {
         isIPad ? 140 : 80
     }
     var itemsSpacing: CGFloat {
-        isIPad ? 24 : 6
+        isIPad ? 21 : 6
     }
         
     var body: some View {
@@ -74,6 +75,7 @@ struct iOSMainView: View {
             ZStack {
                 if connectionManager.pairingStatus == .paired  {
                     shortcutItemsGridView
+                        .padding(.top, 38.0)
                 }
                 VStack {
                     Spacer()
@@ -131,7 +133,8 @@ struct iOSMainView: View {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
             }
-            .padding(.all, 16)
+            .padding(.vertical, 16)
+            .padding(.horizontal, 126)
         } else {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
@@ -177,6 +180,7 @@ struct iOSMainView: View {
                             .frame(width: itemsSize, height: itemsSize)
                         }
                         .hoverEffect(.highlight)
+                        .shadow(color: .black, radius: 8.0)
                    case .app:
                         if let data = test.imageData,
                            let image = UIImage(data: data) {
@@ -191,6 +195,7 @@ struct iOSMainView: View {
                                     .frame(width: itemsSize, height: itemsSize)
                             }
                             .hoverEffect(.highlight)
+                            .shadow(color: .black, radius: 8.0)
                         }
                     case .utility:
                         if let data = test.imageData,
@@ -213,6 +218,7 @@ struct iOSMainView: View {
                                 }
                             }
                             .hoverEffect(.highlight)
+                            .shadow(color: .black, radius: 8.0)
                         }
                     case .webpage:
                         if let data = test.imageData,
@@ -235,6 +241,7 @@ struct iOSMainView: View {
                                 }
                             }
                             .hoverEffect(.highlight)
+                            .shadow(color: .black, radius: 8.0)
                         } else if let data = test.browser?.icon {
                             AnimatedButton {
                                 connectionManager.send(shortcut: test)
@@ -254,6 +261,7 @@ struct iOSMainView: View {
                                 }
                             }
                             .hoverEffect(.highlight)
+                            .shadow(color: .black, radius: 8.0)
                         }
                     }
                 } else {
@@ -327,7 +335,6 @@ struct iOSMainView: View {
                                 currentPage = page
                             }
                             .animation(.easeInOut, value: currentPage)
-//                            .padding(.vertical)
                         }
                     }
                 }
@@ -347,7 +354,8 @@ struct iOSMainView: View {
                 }
             }
         }
-        .padding([.horizontal, .bottom], 48)
+        .padding(.bottom, 28)
+        .padding(.horizontal, 48)
         .alert("Are you sure you want to disconnect?",
                isPresented: $showsDisconnectAlert) {
             HStack {
@@ -364,26 +372,24 @@ struct iOSMainView: View {
         if connectionManager.pairingStatus == .notPaired {
             VStack(spacing: 16.0) {
                 Spacer()
-                Button {
+                VStack {
+                    Image("ios-qr-scanner")
+                        .renderingMode(.template)
+                        .resizable()
+                        .foregroundStyle(colorScheme == .dark ? Color.white : Color.black)
+                        .frame(width: 80, height: 80.0)
+                    Text("Tap to scan QR code")
+                        .font(.system(size: 16.0))
+                }
+                .onTapGesture {
                     showQRScaner = true
-                } label: {
-                    VStack {
-                        Image("ios-qr-scanner")
-                            .resizable()
-                            .frame(width: 80, height: 80.0)
-                        Text("Tap to scan QR code")
-                            .font(.system(size: 16.0))
-                            .foregroundStyle(.white)
-                    }
                 }
                 Spacer()
                 HStack {
                     Text("Do you have MacOS app? ")
                         .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(.white)
                     Text("Tap to download")
                         .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(.white)
                         .underline()
                         .onTapGesture {
                             if let url = URL(string: "https://www.coderblocks.eu/macmobility") {
@@ -408,6 +414,8 @@ extension UIImage {
 }
 
 struct PrimaryButton: View {
+    @Environment(\.colorScheme) var colorScheme
+
     var title: String
     var isSelected: Bool
     var action: () -> Void
@@ -416,12 +424,12 @@ struct PrimaryButton: View {
         Button(action: action) {
             HStack(spacing: 2) {
                 Text(title)
+                    .foregroundStyle(colorScheme == .dark ? .black : .white)
                     .font(.system(size: 16.0, weight: .bold))
-                    .foregroundColor(.black)
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .background(RoundedRectangle(cornerRadius: 12).fill(isSelected ? .white : .gray))
+            .background(RoundedRectangle(cornerRadius: 12).fill(isSelected ? colorScheme == .dark ? .white : .black : .gray))
             .shadow(radius: 2)
             .scaleEffect(isSelected ? 1.0 : 0.85)
         }
