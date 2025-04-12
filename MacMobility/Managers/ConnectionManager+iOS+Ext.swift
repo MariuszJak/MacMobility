@@ -172,6 +172,7 @@ public enum ShortcutType: String, Codable {
 public enum UtilityType: String, Codable {
     case commandline
     case multiselection
+    case automation
 }
 
 public struct ShortcutObject: Identifiable, Codable {
