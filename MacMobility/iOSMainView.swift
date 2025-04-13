@@ -180,7 +180,6 @@ struct iOSMainView: View {
                             .frame(width: itemsSize, height: itemsSize)
                         }
                         .hoverEffect(.highlight)
-                        .shadow(color: .black, radius: 8.0)
                    case .app:
                         if let data = test.imageData,
                            let image = UIImage(data: data) {
@@ -195,7 +194,6 @@ struct iOSMainView: View {
                                     .frame(width: itemsSize, height: itemsSize)
                             }
                             .hoverEffect(.highlight)
-                            .shadow(color: .black, radius: 8.0)
                         }
                     case .utility:
                         if let data = test.imageData,
@@ -218,7 +216,6 @@ struct iOSMainView: View {
                                 }
                             }
                             .hoverEffect(.highlight)
-                            .shadow(color: .black, radius: 8.0)
                         }
                     case .webpage:
                         if let data = test.imageData,
@@ -241,7 +238,6 @@ struct iOSMainView: View {
                                 }
                             }
                             .hoverEffect(.highlight)
-                            .shadow(color: .black, radius: 8.0)
                         } else if let data = test.browser?.icon {
                             AnimatedButton {
                                 connectionManager.send(shortcut: test)
@@ -261,7 +257,6 @@ struct iOSMainView: View {
                                 }
                             }
                             .hoverEffect(.highlight)
-                            .shadow(color: .black, radius: 8.0)
                         }
                     }
                 } else {
