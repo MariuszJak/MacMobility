@@ -36,10 +36,10 @@ struct MacOSAppDependencyScreen: View {
                     .frame(width: 200, height: 200)
                     .padding()
                 VStack(alignment: .leading) {
-                    Text("Welcome to MacMobility!")
+                    Text("Welcome to MobilityControl!")
                         .font(.system(size: 22, weight: .bold))
                         .padding(.bottom, 6.0)
-                    Text("Take control of your MacOS with MacMobility app!")
+                    Text("Take control of your MacOS with MobilityControl app!")
                         .font(.system(size: 16, weight: .regular))
                         .foregroundStyle(Color.gray)
                 }
@@ -73,7 +73,7 @@ struct MacOSAppDependencyScreen: View {
             Text("Everything installed and ready to go?")
                 .font(.system(size: 22, weight: .bold))
                 .padding(.bottom, 2.0)
-            Text("Now you are able to use MacMobility app on your Mac!")
+            Text("Now you are able to use MobilityControl app on your Mac!")
                 .font(.system(size: 16, weight: .regular))
                 .foregroundStyle(Color.gray)
                 .padding(.bottom, 22.0)
