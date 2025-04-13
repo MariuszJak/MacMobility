@@ -1,6 +1,5 @@
 //
 //  Color+Ext.swift
-//  MacMobility
 //
 //  Created by Mariusz Jakowienko on 16/03/2025.
 //

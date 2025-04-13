@@ -536,7 +536,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacMobility/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = MacMobility;
+				INFOPLIST_KEY_CFBundleDisplayName = MobilityControl;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Scan QR code.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MacMobility needs this permission for connectic to MacOS version.";
@@ -575,7 +575,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacMobility/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = MacMobility;
+				INFOPLIST_KEY_CFBundleDisplayName = MobilityControl;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Scan QR code.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MacMobility needs this permission for connectic to MacOS version.";

@@ -1,6 +1,4 @@
 //
-//  MacMobilityApp.swift
-//  MacMobility
 //
 //  Created by Mariusz Jakowienko on 20/01/2024.
 //

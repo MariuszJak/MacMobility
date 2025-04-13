@@ -1,6 +1,5 @@
 //
 //  AnimatedButton.swift
-//  MacMobility
 //
 //  Created by Mariusz Jakowienko on 23/03/2025.
 //
