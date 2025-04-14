@@ -112,7 +112,7 @@ struct iOSMainView: View {
         .sheet(isPresented: $showDependencyScreen, onDismiss: {
             didSeenDependencyScreens = true
         }, content: {
-            MacOSAppDependencyScreen()
+            AppDependencyScreen()
                 .if(!didSeenDependencyScreens) {
                     $0.interactiveDismissDisabled()
                 }
@@ -374,28 +374,18 @@ struct iOSMainView: View {
             VStack(spacing: 16.0) {
                 Spacer()
                 VStack {
-                    Image("ios-qr-scanner")
-                        .renderingMode(.template)
-                        .resizable()
-                        .foregroundStyle(colorScheme == .dark ? Color.white : Color.black)
-                        .frame(width: 80, height: 80.0)
-                    Text("Tap to scan QR code")
-                        .font(.system(size: 16.0))
-                }
-                .onTapGesture {
-                    showQRScaner = true
+                    Text("Welcome!")
+                        .font(.system(size: 28.0, weight: .bold))
                 }
                 Spacer()
                 HStack {
-                    Text("Do you have MacOS app? ")
+                    Text("Do you have companion app? ")
                         .font(.system(size: 12, weight: .regular))
-                    Text("Tap to download")
+                    Text("Tap to Learn More")
                         .font(.system(size: 12, weight: .regular))
                         .underline()
                         .onTapGesture {
-                            if let url = URL(string: "https://www.coderblocks.eu/macmobility") {
-                                UIApplication.shared.open(url)
-                            }
+                            showDependencyScreen = true
                         }
                 }
             }

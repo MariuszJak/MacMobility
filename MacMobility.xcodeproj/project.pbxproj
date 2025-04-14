@@ -14,7 +14,7 @@
 		C064BA5D2D876EF60091E2BE /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */; };
 		C064BA5F2D876F080091E2BE /* Optional+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5E2D876F080091E2BE /* Optional+Ext.swift */; };
 		C064BA612D876F210091E2BE /* View+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA602D876F210091E2BE /* View+Ext.swift */; };
-		C09774E52B5C22A000F4FFE6 /* MacMobilityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */; };
+		C09774E52B5C22A000F4FFE6 /* MobilityControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E42B5C22A000F4FFE6 /* MobilityControlApp.swift */; };
 		C09774E92B5C22A100F4FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774E82B5C22A100F4FFE6 /* Assets.xcassets */; };
 		C09774EC2B5C22A100F4FFE6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */; };
 		C09774F62B5C22A100F4FFE6 /* MacMobilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774F52B5C22A100F4FFE6 /* MacMobilityTests.swift */; };
@@ -25,7 +25,7 @@
 		C09775172B5C235700F4FFE6 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775162B5C235700F4FFE6 /* ConnectionManager.swift */; };
 		C09775192B5C239600F4FFE6 /* iOSMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775182B5C239600F4FFE6 /* iOSMainView.swift */; };
 		C097751B2B5C239B00F4FFE6 /* QRCodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C097751A2B5C239B00F4FFE6 /* QRCodeScanner.swift */; };
-		C097751D2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C097751C2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift */; };
+		C097751D2B5C23A100F4FFE6 /* AppDependencyScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C097751C2B5C23A100F4FFE6 /* AppDependencyScreen.swift */; };
 		C097751F2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C097751E2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift */; };
 		C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */; };
 		C0BDB29D2BA3AF5800B36D19 /* Swiftly in Frameworks */ = {isa = PBXBuildFile; productRef = C0BDB29C2BA3AF5800B36D19 /* Swiftly */; };
@@ -57,7 +57,7 @@
 		C064BA5E2D876F080091E2BE /* Optional+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Ext.swift"; sourceTree = "<group>"; };
 		C064BA602D876F210091E2BE /* View+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Ext.swift"; sourceTree = "<group>"; };
 		C09774E12B5C22A000F4FFE6 /* MacMobility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMobility.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMobilityApp.swift; sourceTree = "<group>"; };
+		C09774E42B5C22A000F4FFE6 /* MobilityControlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilityControlApp.swift; sourceTree = "<group>"; };
 		C09774E82B5C22A100F4FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C09774F12B5C22A100F4FFE6 /* MacMobilityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacMobilityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,7 +70,7 @@
 		C09775162B5C235700F4FFE6 /* ConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		C09775182B5C239600F4FFE6 /* iOSMainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSMainView.swift; sourceTree = "<group>"; };
 		C097751A2B5C239B00F4FFE6 /* QRCodeScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeScanner.swift; sourceTree = "<group>"; };
-		C097751C2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacOSAppDependencyScreen.swift; sourceTree = "<group>"; };
+		C097751C2B5C23A100F4FFE6 /* AppDependencyScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDependencyScreen.swift; sourceTree = "<group>"; };
 		C097751E2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConnectionManager+iOS+Ext.swift"; sourceTree = "<group>"; };
 		C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionSenable.swift; sourceTree = "<group>"; };
 		C09775222B5C259000F4FFE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -144,10 +144,10 @@
 				C09775152B5C234F00F4FFE6 /* Managers */,
 				C09775102B5C233000F4FFE6 /* Extensions */,
 				C0EAFC1B2D90619A00044947 /* Views */,
-				C09774E42B5C22A000F4FFE6 /* MacMobilityApp.swift */,
+				C09774E42B5C22A000F4FFE6 /* MobilityControlApp.swift */,
 				C09775182B5C239600F4FFE6 /* iOSMainView.swift */,
 				C097751A2B5C239B00F4FFE6 /* QRCodeScanner.swift */,
-				C097751C2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift */,
+				C097751C2B5C23A100F4FFE6 /* AppDependencyScreen.swift */,
 				C09774E82B5C22A100F4FFE6 /* Assets.xcassets */,
 				C09774EA2B5C22A100F4FFE6 /* Preview Content */,
 			);
@@ -362,9 +362,9 @@
 				C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */,
 				C064BA5D2D876EF60091E2BE /* UIColor+Ext.swift in Sources */,
 				C097751F2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift in Sources */,
-				C097751D2B5C23A100F4FFE6 /* MacOSAppDependencyScreen.swift in Sources */,
+				C097751D2B5C23A100F4FFE6 /* AppDependencyScreen.swift in Sources */,
 				C097751B2B5C239B00F4FFE6 /* QRCodeScanner.swift in Sources */,
-				C09774E52B5C22A000F4FFE6 /* MacMobilityApp.swift in Sources */,
+				C09774E52B5C22A000F4FFE6 /* MobilityControlApp.swift in Sources */,
 				C09775192B5C239600F4FFE6 /* iOSMainView.swift in Sources */,
 				C064BA5B2D876ED10091E2BE /* Color+Ext.swift in Sources */,
 				C064BA612D876F210091E2BE /* View+Ext.swift in Sources */,
@@ -530,7 +530,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"MacMobility/Preview Content\"";
 				DEVELOPMENT_TEAM = VDU5LZJ85D;
 				ENABLE_PREVIEWS = YES;
@@ -570,7 +570,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"MacMobility/Preview Content\"";
 				DEVELOPMENT_TEAM = VDU5LZJ85D;
 				ENABLE_PREVIEWS = YES;

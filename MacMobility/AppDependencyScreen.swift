@@ -1,5 +1,5 @@
 //
-//  MacOSAppDependencyScreen.swift
+//  AppDependencyScreen.swift
 //  MagicTrackpad
 //
 //  Created by Mariusz Jakowienko on 13/01/2024.
@@ -13,7 +13,7 @@ enum WorkspaceControl: String, CaseIterable {
     case prev, next
 }
 
-struct MacOSAppDependencyScreen: View {
+struct AppDependencyScreen: View {
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         VStack {
@@ -39,7 +39,7 @@ struct MacOSAppDependencyScreen: View {
                     Text("Welcome to MobilityControl!")
                         .font(.system(size: 22, weight: .bold))
                         .padding(.bottom, 6.0)
-                    Text("Take control of your MacOS with MobilityControl app!")
+                    Text("Take control with MobilityControl app!")
                         .font(.system(size: 16, weight: .regular))
                         .foregroundStyle(Color.gray)
                 }
@@ -53,13 +53,13 @@ struct MacOSAppDependencyScreen: View {
             Spacer()
                 .frame(height: 56.0)
             OrientationStack {
-                Image("macosapp")
+                Image("externalApp")
                     .padding()
                 VStack(alignment: .leading) {
-                    Text("MacOS companion application")
+                    Text("Companion application")
                         .font(.system(size: 22, weight: .bold))
                         .padding(.bottom, 6.0)
-                    Text("For this application to work, you need to download MacOS companion application.\nIt is available on the webpage: www.coderblocks.eu/macmobility. Download it and install on your Mac, and then you can continue.")
+                    Text("Download companion application that extends capabilities of this app!\nIt is available on the webpage: www.coderblocks.eu/mobility. Download it and install on your laptop, and then you can continue.")
                         .font(.system(size: 16, weight: .regular))
                         .foregroundStyle(Color.gray)
                 }
@@ -73,7 +73,7 @@ struct MacOSAppDependencyScreen: View {
             Text("Everything installed and ready to go?")
                 .font(.system(size: 22, weight: .bold))
                 .padding(.bottom, 2.0)
-            Text("Now you are able to use MobilityControl app on your Mac!")
+            Text("Now you are able to use MobilityControl app on your laptop!")
                 .font(.system(size: 16, weight: .regular))
                 .foregroundStyle(Color.gray)
                 .padding(.bottom, 22.0)

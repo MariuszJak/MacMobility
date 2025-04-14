@@ -6,7 +6,7 @@
 import SwiftUI
 
 @main
-struct MacMobilityApp: App {
+struct MobilityControlApp: App {
     var body: some Scene {
         WindowGroup {
             iOSMainView()
