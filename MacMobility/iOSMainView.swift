@@ -34,6 +34,11 @@ struct ShortcutsListData: Identifiable {
     var shortcuts: [ShortcutObject]
 }
 
+struct ShortcutsDiffListData: Identifiable {
+    var id: String { UUID().uuidString }
+    var shortcutsDiff: [ChangeType: [SDiff]]
+}
+
 struct WorkSpaceControlItem: Identifiable {
     var id: String { UUID().uuidString }
     let title: String
@@ -134,7 +139,7 @@ struct iOSMainView: View {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
             }
             .padding(.vertical, 16)
-            .padding(.horizontal, 126)
+            .padding(.horizontal, 42.0)
         } else {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
@@ -285,6 +290,7 @@ struct iOSMainView: View {
             connectionManager.webpagesList.removeAll()
             connectionManager.workspacesList.removeAll()
             connectionManager.shortcutsList.removeAll()
+            connectionManager.shortcutsDiffList.removeAll()
             connectionManager.startAdvertising()
             connectionManager.startBrowsing()
             connectionManager.receivedInvite = false

@@ -53,6 +53,7 @@ class ConnectionManager: NSObject, ObservableObject {
     @Published public var webpagesList: [WebPageListData] = []
     @Published public var workspacesList: [WorkspacesListData] = []
     @Published public var shortcutsList: [ShortcutsListData] = []
+    @Published public var shortcutsDiffList: [ShortcutsDiffListData] = []
     @Published public var alert: AlertMessage?
     public var rowCount = 4
 
@@ -68,6 +69,28 @@ class ConnectionManager: NSObject, ObservableObject {
         serviceBrowser.delegate = self
 
         subscribeForRotationChange()
+        
+        $shortcutsDiffList
+            .receive(on: RunLoop.main)
+            .sink { diffs in
+                let test = diffs.flatMap { $0.shortcutsDiff }.sorted { $0.key.priority < $1.key.priority }
+                test.forEach { key, value in
+                    switch key {
+                    case .insert:
+                        self.shortcutsList.append(.init(shortcuts: value.map { $0.item }))
+                    case .remove:
+                        value.forEach { sdiff in
+                            self.shortcutsList.enumerated().forEach { (at, item) in
+                                item.shortcuts.enumerated().forEach { index, object in
+                                    if sdiff.item.id == object.id {
+                                        self.shortcutsList[at].shortcuts.remove(at: index)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        }.store(in: &subscriptions)
     }
 
     deinit {

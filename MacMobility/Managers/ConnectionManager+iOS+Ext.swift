@@ -175,6 +175,24 @@ public enum UtilityType: String, Codable {
     case automation
 }
 
+enum ChangeType: String, Codable {
+    case insert
+    case remove
+    
+    var priority: Int {
+        switch self {
+        case .insert:
+            return 2
+        case .remove:
+            return 1
+        }
+    }
+}
+
+struct SDiff: Codable {
+    var item: ShortcutObject, from: Int?, to: Int?
+}
+
 public struct ShortcutObject: Identifiable, Codable {
     public let index: Int?
     public var page: Int
@@ -215,6 +233,11 @@ struct ShortcutsResponse: Codable {
     let shortcuts: [ShortcutObject]
 }
 
+struct ShortcutsResponseDiff: Codable {
+    let shortcutTitle: String
+    let shortcutsDiff: [ChangeType: [SDiff]]
+}
+
 extension ConnectionManager {
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         DispatchQueue.main.async {
@@ -244,10 +267,15 @@ extension ConnectionManager {
                 guard workspaces.workspacesTitle == "workspacesTitle" else { return }
                 self.workspacesList = workspaces.workspaces.chunked(into: self.rowCount).map { WorkspacesListData(workspaces: $0) }
             }
+//            
+//            if let shortcuts = try? JSONDecoder().decode(ShortcutsResponse.self, from: data) {
+//                guard shortcuts.shortcutTitle == "shortcutTitle" else { return }
+//                self.shortcutsList = [ShortcutsListData(shortcuts: shortcuts.shortcuts)]
+//            }
             
-            if let shortcuts = try? JSONDecoder().decode(ShortcutsResponse.self, from: data) {
-                guard shortcuts.shortcutTitle == "shortcutTitle" else { return }
-                self.shortcutsList = [ShortcutsListData(shortcuts: shortcuts.shortcuts)]
+            if let shortcuts = try? JSONDecoder().decode(ShortcutsResponseDiff.self, from: data) {
+                guard shortcuts.shortcutTitle == "shortcutTitleDiff" else { return }
+                self.shortcutsDiffList = [ShortcutsDiffListData(shortcutsDiff: shortcuts.shortcutsDiff)]
             }
             
             if let alert = try? JSONDecoder().decode(AlertMessageResponse.self, from: data) {
