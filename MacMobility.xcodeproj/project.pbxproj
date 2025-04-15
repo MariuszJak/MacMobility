@@ -17,9 +17,6 @@
 		C09774E52B5C22A000F4FFE6 /* MobilityControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E42B5C22A000F4FFE6 /* MobilityControlApp.swift */; };
 		C09774E92B5C22A100F4FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774E82B5C22A100F4FFE6 /* Assets.xcassets */; };
 		C09774EC2B5C22A100F4FFE6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */; };
-		C09774F62B5C22A100F4FFE6 /* MacMobilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774F52B5C22A100F4FFE6 /* MacMobilityTests.swift */; };
-		C09775002B5C22A100F4FFE6 /* MacMobilityUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774FF2B5C22A100F4FFE6 /* MacMobilityUITests.swift */; };
-		C09775022B5C22A100F4FFE6 /* MacMobilityUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775012B5C22A100F4FFE6 /* MacMobilityUITestsLaunchTests.swift */; };
 		C09775132B5C233B00F4FFE6 /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775112B5C233B00F4FFE6 /* String+Ext.swift */; };
 		C09775142B5C233B00F4FFE6 /* Array+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775122B5C233B00F4FFE6 /* Array+Ext.swift */; };
 		C09775172B5C235700F4FFE6 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775162B5C235700F4FFE6 /* ConnectionManager.swift */; };
@@ -61,10 +58,7 @@
 		C09774E82B5C22A100F4FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C09774F12B5C22A100F4FFE6 /* MacMobilityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacMobilityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C09774F52B5C22A100F4FFE6 /* MacMobilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMobilityTests.swift; sourceTree = "<group>"; };
 		C09774FB2B5C22A100F4FFE6 /* MacMobilityUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacMobilityUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C09774FF2B5C22A100F4FFE6 /* MacMobilityUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMobilityUITests.swift; sourceTree = "<group>"; };
-		C09775012B5C22A100F4FFE6 /* MacMobilityUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMobilityUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C09775112B5C233B00F4FFE6 /* String+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
 		C09775122B5C233B00F4FFE6 /* Array+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Ext.swift"; sourceTree = "<group>"; };
 		C09775162B5C235700F4FFE6 /* ConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
@@ -120,8 +114,6 @@
 			children = (
 				C01B420A2BA3A5C0006C5C37 /* SPM */,
 				C09774E32B5C22A000F4FFE6 /* MacMobility */,
-				C09774F42B5C22A100F4FFE6 /* MacMobilityTests */,
-				C09774FE2B5C22A100F4FFE6 /* MacMobilityUITests */,
 				C09774E22B5C22A000F4FFE6 /* Products */,
 				C0BDB29B2BA3AF5800B36D19 /* Frameworks */,
 			);
@@ -160,23 +152,6 @@
 				C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		C09774F42B5C22A100F4FFE6 /* MacMobilityTests */ = {
-			isa = PBXGroup;
-			children = (
-				C09774F52B5C22A100F4FFE6 /* MacMobilityTests.swift */,
-			);
-			path = MacMobilityTests;
-			sourceTree = "<group>";
-		};
-		C09774FE2B5C22A100F4FFE6 /* MacMobilityUITests */ = {
-			isa = PBXGroup;
-			children = (
-				C09774FF2B5C22A100F4FFE6 /* MacMobilityUITests.swift */,
-				C09775012B5C22A100F4FFE6 /* MacMobilityUITestsLaunchTests.swift */,
-			);
-			path = MacMobilityUITests;
 			sourceTree = "<group>";
 		};
 		C09775102B5C233000F4FFE6 /* Extensions */ = {
@@ -376,7 +351,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C09774F62B5C22A100F4FFE6 /* MacMobilityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,8 +358,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C09775002B5C22A100F4FFE6 /* MacMobilityUITests.swift in Sources */,
-				C09775022B5C22A100F4FFE6 /* MacMobilityUITestsLaunchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -530,7 +502,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"MacMobility/Preview Content\"";
 				DEVELOPMENT_TEAM = VDU5LZJ85D;
 				ENABLE_PREVIEWS = YES;
@@ -570,7 +542,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"MacMobility/Preview Content\"";
 				DEVELOPMENT_TEAM = VDU5LZJ85D;
 				ENABLE_PREVIEWS = YES;
@@ -607,7 +579,6 @@
 		C09775092B5C22A100F4FFE6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -627,7 +598,6 @@
 		C097750A2B5C22A100F4FFE6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -647,7 +617,6 @@
 		C097750C2B5C22A100F4FFE6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VDU5LZJ85D;
@@ -665,7 +634,6 @@
 		C097750D2B5C22A100F4FFE6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VDU5LZJ85D;
