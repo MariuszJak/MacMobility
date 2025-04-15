@@ -140,6 +140,21 @@ struct iOSMainView: View {
             }
             .padding(.vertical, 16)
             .padding(.horizontal, 42.0)
+            .gesture(
+                DragGesture()
+                    .onEnded { value in
+                        let horizontalAmount = value.translation.width
+                        if horizontalAmount < -50 {
+                            if currentPage < findLargestPage(in: connectionManager.shortcutsList.flatMap(\.shortcuts))  {
+                                currentPage += 1
+                            }
+                        } else if horizontalAmount > 50 {
+                            if currentPage > 1 {
+                                currentPage -= 1
+                            }
+                        }
+                    }
+            )
         } else {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
@@ -374,8 +389,16 @@ struct iOSMainView: View {
             VStack(spacing: 16.0) {
                 Spacer()
                 VStack {
-                    Text("Welcome!")
-                        .font(.system(size: 28.0, weight: .bold))
+                    Image("ios-qr-scanner")
+                        .renderingMode(.template)
+                        .resizable()
+                        .foregroundStyle(colorScheme == .dark ? Color.white : Color.black)
+                        .frame(width: 80, height: 80.0)
+                    Text("Tap to scan QR code")
+                        .font(.system(size: 16.0))
+                }
+                .onTapGesture {
+                    showQRScaner = true
                 }
                 Spacer()
                 HStack {
