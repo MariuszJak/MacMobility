@@ -207,11 +207,12 @@ public struct ShortcutObject: Identifiable, Codable {
     public var scriptCode: String?
     public var utilityType: UtilityType?
     public var objects: [ShortcutObject]?
+    public var showTitleOnIcon: Bool?
     
     public init(type: ShortcutType, page: Int, index: Int? = nil, path: String? = nil, id: String,
                 title: String, color: String? = nil, faviconLink: String? = nil,
                 browser: Browsers? = nil, imageData: Data? = nil, scriptCode: String? = nil,
-                utilityType: UtilityType? = nil, objects: [ShortcutObject]? = nil) {
+                utilityType: UtilityType? = nil, objects: [ShortcutObject]? = nil, showTitleOnIcon: Bool = true) {
         self.type = type
         self.page = page
         self.index = index
@@ -225,6 +226,7 @@ public struct ShortcutObject: Identifiable, Codable {
         self.scriptCode = scriptCode
         self.utilityType = utilityType
         self.objects = objects
+        self.showTitleOnIcon = showTitleOnIcon
     }
 }
 

@@ -188,12 +188,14 @@ struct iOSMainView: View {
                                             .cornerRadius(20.0)
                                             .frame(width: itemsSize, height: itemsSize)
                                     }
-                                    Text(test.title)
-                                        .font(.system(size: regularFontSize))
-                                        .foregroundStyle(Color.white)
-                                        .multilineTextAlignment(.center)
-                                        .padding(.all, 3)
-                                        .stroke(color: .black)
+                                    if test.showTitleOnIcon ?? true {
+                                        Text(test.title)
+                                            .font(.system(size: regularFontSize))
+                                            .foregroundStyle(Color.white)
+                                            .multilineTextAlignment(.center)
+                                            .padding(.all, 3)
+                                            .stroke(color: .black)
+                                    }
                                 }
                             }
                             .cornerRadius(20.0)
@@ -227,12 +229,14 @@ struct iOSMainView: View {
                                         .aspectRatio(contentMode: .fill)
                                         .cornerRadius(20.0)
                                         .frame(width: itemsSize, height: itemsSize)
-                                    Text(test.title)
-                                        .font(.system(size: regularFontSize))
-                                        .foregroundStyle(Color.white)
-                                        .multilineTextAlignment(.center)
-                                        .padding(.all, 3)
-                                        .stroke(color: .black)
+                                    if test.showTitleOnIcon ?? true {
+                                        Text(test.title)
+                                            .font(.system(size: regularFontSize))
+                                            .foregroundStyle(Color.white)
+                                            .multilineTextAlignment(.center)
+                                            .padding(.all, 3)
+                                            .stroke(color: .black)
+                                    }
                                 }
                             }
                             .hoverEffect(.highlight)
@@ -249,12 +253,14 @@ struct iOSMainView: View {
                                         .aspectRatio(contentMode: .fill)
                                         .cornerRadius(20.0)
                                         .frame(width: itemsSize, height: itemsSize)
-                                    Text(test.title)
-                                        .font(.system(size: regularFontSize))
-                                        .foregroundStyle(Color.white)
-                                        .multilineTextAlignment(.center)
-                                        .padding(.all, 3)
-                                        .stroke(color: .black)
+                                    if test.showTitleOnIcon ?? true {
+                                        Text(test.title)
+                                            .font(.system(size: regularFontSize))
+                                            .foregroundStyle(Color.white)
+                                            .multilineTextAlignment(.center)
+                                            .padding(.all, 3)
+                                            .stroke(color: .black)
+                                    }
                                 }
                             }
                             .hoverEffect(.highlight)
@@ -269,11 +275,13 @@ struct iOSMainView: View {
                                         .aspectRatio(contentMode: .fill)
                                         .cornerRadius(20.0)
                                         .frame(width: itemsSize, height: itemsSize)
-                                    Text(test.title)
-                                        .font(.system(size: regularFontSize))
-                                        .foregroundStyle(Color.white)
-                                        .multilineTextAlignment(.center)
-                                        .stroke(color: .black)
+                                    if test.showTitleOnIcon ?? true {
+                                        Text(test.title)
+                                            .font(.system(size: regularFontSize))
+                                            .foregroundStyle(Color.white)
+                                            .multilineTextAlignment(.center)
+                                            .stroke(color: .black)
+                                    }
                                 }
                             }
                             .hoverEffect(.highlight)
