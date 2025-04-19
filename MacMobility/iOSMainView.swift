@@ -52,6 +52,7 @@ struct iOSMainView: View {
     @Environment(\.colorScheme) var colorScheme
     @State var currentPage: Int = 1
     @StateObject var connectionManager = ConnectionManager()
+    @StateObject private var orientationObserver = OrientationObserver()
     @State var startPos: CGPoint = .zero
     @State var isSwipping = true
     @State var showQRScaner = false
@@ -68,7 +69,7 @@ struct iOSMainView: View {
         UIDevice.current.localizedModel.contains("iPad")
     }
     var itemsSize: CGFloat {
-        isIPad ? 140 : 80
+        isIPad ? (orientationObserver.orientation.isLandscape ? 140 : (isIPadPro13Inch() ? 110 : 90)) : 80
     }
     var itemsSpacing: CGFloat {
         isIPad ? 21 : 6
@@ -132,6 +133,8 @@ struct iOSMainView: View {
         .padding(.horizontal)
     }
     
+    
+    
     @ViewBuilder
     private var shortcutItemsGridView: some View {
         if isIPad {
@@ -139,7 +142,7 @@ struct iOSMainView: View {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
             }
             .padding(.vertical, 16)
-            .padding(.horizontal, 42.0)
+            .frame(width: orientationObserver.orientation.isLandscape ? 1100.0 : (isIPadPro13Inch() ? 900.0 : 700.0))
             .gesture(
                 DragGesture()
                     .onEnded { value in
@@ -158,11 +161,29 @@ struct iOSMainView: View {
         } else {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
-                    .padding(.horizontal, 32)
+                    .frame(width: orientationObserver.orientation.isLandscape ? 650.0 : 300)
                 Spacer()
             }
             .padding(.all, 16)
         }
+    }
+    
+    func getDeviceModelIdentifier() -> String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        return withUnsafePointer(to: &systemInfo.machine) {
+            ptr in String(cString: UnsafeRawPointer(ptr).assumingMemoryBound(to: CChar.self))
+        }
+    }
+
+    func isIPadPro13Inch() -> Bool {
+        let identifier = getDeviceModelIdentifier()
+        return identifier == "iPad16,3" || identifier == "iPad16,4" // M4 13-inch
+    }
+
+    func isIPadPro11Inch() -> Bool {
+        let identifier = getDeviceModelIdentifier()
+        return identifier == "iPad16,1" || identifier == "iPad16,2" // M4 11-inch
     }
     
     func findLargestPage(in shortcuts: [ShortcutObject]) -> Int {
@@ -422,39 +443,5 @@ struct iOSMainView: View {
             }
             .frame(height: UIScreen.main.bounds.height - 106.0)
         }
-    }
-}
-
-extension UIImage {
-    func resizeImage(targetSize: CGSize) -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: targetSize)
-        let resizedImage = renderer.image { (context) in
-            self.draw(in: CGRect(origin: .zero, size: targetSize))
-        }
-        return resizedImage
-    }
-}
-
-struct PrimaryButton: View {
-    @Environment(\.colorScheme) var colorScheme
-
-    var title: String
-    var isSelected: Bool
-    var action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 2) {
-                Text(title)
-                    .foregroundStyle(colorScheme == .dark ? .black : .white)
-                    .font(.system(size: 16.0, weight: .bold))
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(RoundedRectangle(cornerRadius: 12).fill(isSelected ? colorScheme == .dark ? .white : .black : .gray))
-            .shadow(radius: 2)
-            .scaleEffect(isSelected ? 1.0 : 0.85)
-        }
-        .buttonStyle(PlainButtonStyle())
     }
 }

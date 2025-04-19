@@ -269,11 +269,6 @@ extension ConnectionManager {
                 guard workspaces.workspacesTitle == "workspacesTitle" else { return }
                 self.workspacesList = workspaces.workspaces.chunked(into: self.rowCount).map { WorkspacesListData(workspaces: $0) }
             }
-//            
-//            if let shortcuts = try? JSONDecoder().decode(ShortcutsResponse.self, from: data) {
-//                guard shortcuts.shortcutTitle == "shortcutTitle" else { return }
-//                self.shortcutsList = [ShortcutsListData(shortcuts: shortcuts.shortcuts)]
-//            }
             
             if let shortcuts = try? JSONDecoder().decode(ShortcutsResponseDiff.self, from: data) {
                 guard shortcuts.shortcutTitle == "shortcutTitleDiff" else { return }

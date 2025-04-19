@@ -14,6 +14,9 @@
 		C064BA5D2D876EF60091E2BE /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */; };
 		C064BA5F2D876F080091E2BE /* Optional+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5E2D876F080091E2BE /* Optional+Ext.swift */; };
 		C064BA612D876F210091E2BE /* View+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA602D876F210091E2BE /* View+Ext.swift */; };
+		C071D7122DB3C74000ADD746 /* OrientationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071D7112DB3C74000ADD746 /* OrientationObserver.swift */; };
+		C071D7142DB3C75A00ADD746 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071D7132DB3C75A00ADD746 /* PrimaryButton.swift */; };
+		C071D7162DB3C77700ADD746 /* UIImage+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071D7152DB3C77700ADD746 /* UIImage+Ext.swift */; };
 		C09774E52B5C22A000F4FFE6 /* MobilityControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E42B5C22A000F4FFE6 /* MobilityControlApp.swift */; };
 		C09774E92B5C22A100F4FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774E82B5C22A100F4FFE6 /* Assets.xcassets */; };
 		C09774EC2B5C22A100F4FFE6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */; };
@@ -53,6 +56,9 @@
 		C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		C064BA5E2D876F080091E2BE /* Optional+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Ext.swift"; sourceTree = "<group>"; };
 		C064BA602D876F210091E2BE /* View+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Ext.swift"; sourceTree = "<group>"; };
+		C071D7112DB3C74000ADD746 /* OrientationObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationObserver.swift; sourceTree = "<group>"; };
+		C071D7132DB3C75A00ADD746 /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
+		C071D7152DB3C77700ADD746 /* UIImage+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Ext.swift"; sourceTree = "<group>"; };
 		C09774E12B5C22A000F4FFE6 /* MacMobility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMobility.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C09774E42B5C22A000F4FFE6 /* MobilityControlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilityControlApp.swift; sourceTree = "<group>"; };
 		C09774E82B5C22A100F4FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -163,6 +169,7 @@
 				C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */,
 				C064BA5E2D876F080091E2BE /* Optional+Ext.swift */,
 				C064BA602D876F210091E2BE /* View+Ext.swift */,
+				C071D7152DB3C77700ADD746 /* UIImage+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -173,6 +180,7 @@
 				C09775162B5C235700F4FFE6 /* ConnectionManager.swift */,
 				C097751E2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift */,
 				C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */,
+				C071D7112DB3C74000ADD746 /* OrientationObserver.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -188,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */,
+				C071D7132DB3C75A00ADD746 /* PrimaryButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -332,17 +341,20 @@
 			files = (
 				C09775172B5C235700F4FFE6 /* ConnectionManager.swift in Sources */,
 				C09775132B5C233B00F4FFE6 /* String+Ext.swift in Sources */,
+				C071D7162DB3C77700ADD746 /* UIImage+Ext.swift in Sources */,
 				C0EAFC1D2D9061A400044947 /* AnimatedButton.swift in Sources */,
 				C09775142B5C233B00F4FFE6 /* Array+Ext.swift in Sources */,
 				C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */,
 				C064BA5D2D876EF60091E2BE /* UIColor+Ext.swift in Sources */,
 				C097751F2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift in Sources */,
+				C071D7122DB3C74000ADD746 /* OrientationObserver.swift in Sources */,
 				C097751D2B5C23A100F4FFE6 /* AppDependencyScreen.swift in Sources */,
 				C097751B2B5C239B00F4FFE6 /* QRCodeScanner.swift in Sources */,
 				C09774E52B5C22A000F4FFE6 /* MobilityControlApp.swift in Sources */,
 				C09775192B5C239600F4FFE6 /* iOSMainView.swift in Sources */,
 				C064BA5B2D876ED10091E2BE /* Color+Ext.swift in Sources */,
 				C064BA612D876F210091E2BE /* View+Ext.swift in Sources */,
+				C071D7142DB3C75A00ADD746 /* PrimaryButton.swift in Sources */,
 				C064BA5F2D876F080091E2BE /* Optional+Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,7 +514,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"MacMobility/Preview Content\"";
 				DEVELOPMENT_TEAM = VDU5LZJ85D;
 				ENABLE_PREVIEWS = YES;
@@ -523,7 +535,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.macmobility.MacMobility;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -542,7 +554,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"MacMobility/Preview Content\"";
 				DEVELOPMENT_TEAM = VDU5LZJ85D;
 				ENABLE_PREVIEWS = YES;
@@ -563,7 +575,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.macmobility.MacMobility;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
