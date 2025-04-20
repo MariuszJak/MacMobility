@@ -167,6 +167,7 @@ public enum ShortcutType: String, Codable {
     case app
     case webpage
     case utility
+    case controler
 }
 
 public enum UtilityType: String, Codable {
@@ -208,11 +209,13 @@ public struct ShortcutObject: Identifiable, Codable {
     public var utilityType: UtilityType?
     public var objects: [ShortcutObject]?
     public var showTitleOnIcon: Bool?
+    public var additions: [String: String]?
     
     public init(type: ShortcutType, page: Int, index: Int? = nil, path: String? = nil, id: String,
                 title: String, color: String? = nil, faviconLink: String? = nil,
                 browser: Browsers? = nil, imageData: Data? = nil, scriptCode: String? = nil,
-                utilityType: UtilityType? = nil, objects: [ShortcutObject]? = nil, showTitleOnIcon: Bool = true) {
+                utilityType: UtilityType? = nil, objects: [ShortcutObject]? = nil, showTitleOnIcon: Bool = true,
+                additions: [String: String]? = nil) {
         self.type = type
         self.page = page
         self.index = index
@@ -227,6 +230,13 @@ public struct ShortcutObject: Identifiable, Codable {
         self.utilityType = utilityType
         self.objects = objects
         self.showTitleOnIcon = showTitleOnIcon
+        self.additions = additions
+    }
+}
+
+extension ShortcutObject {
+    static func copy(from other: ShortcutObject, additions: [String: String]) -> ShortcutObject {
+        .init(type: other.type, page: other.page, index: other.index, path: other.path, id: other.id, title: other.title, color: other.color, faviconLink: other.faviconLink, browser: other.browser, imageData: other.imageData, scriptCode: other.scriptCode, utilityType: other.utilityType, objects: other.objects, showTitleOnIcon: other.showTitleOnIcon ?? true, additions: additions)
     }
 }
 

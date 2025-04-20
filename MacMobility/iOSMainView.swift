@@ -191,7 +191,8 @@ struct iOSMainView: View {
     }
     
     func grid(shortcuts: [ShortcutObject]) -> some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: itemsSize))], spacing: itemsSpacing) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: itemsSize), alignment: .leading)],
+                  spacing: itemsSpacing) {
             ForEach(0..<21) { index in
                 if let test = shortcuts.first(where: { $0.index == index }) {
                     switch test.type {
@@ -262,6 +263,14 @@ struct iOSMainView: View {
                             }
                             .hoverEffect(.highlight)
                         }
+                    case .controler:
+                        if test.id == "horizontal-scroll" {
+                            BrightnessVolumeContainerView { value in
+                                var additions = test.additions ?? [:]
+                                additions["value"] = value
+                                connectionManager.send(shortcut: ShortcutObject.copy(from: test, additions: additions))
+                            }
+                        }
                     case .webpage:
                         if let data = test.imageData,
                            let image = UIImage(data: data) {
@@ -309,14 +318,25 @@ struct iOSMainView: View {
                         }
                     }
                 } else {
-                    VStack {
+                    if let one = shortcuts.first(where: { $0.index == index - 1 }), one.type == .controler {
+                        VStack {
+                        }
+                        .frame(width: itemsSize, height: itemsSize)
+                        .disabled(true)
+                    } else if let two = shortcuts.first(where: { $0.index == index - 2 }), two.type == .controler {
+                        VStack {
+                        }
+                        .frame(width: itemsSize, height: itemsSize)
+                        .disabled(true)
+                    }  else {
+                        VStack {
+                        }
+                        .frame(width: itemsSize, height: itemsSize)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20.0)
+                                .fill(.gray.opacity(0.2))
+                        )
                     }
-                    .frame(width: itemsSize, height: itemsSize)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20.0)
-                            .fill(.gray.opacity(0.2))
-                        
-                    )
                 }
             }
             .padding(.horizontal)
@@ -443,5 +463,88 @@ struct iOSMainView: View {
             }
             .frame(height: UIScreen.main.bounds.height - 106.0)
         }
+    }
+}
+
+struct BrightnessVolumeContainerView: View {
+    var completion: (String) -> Void
+    
+    init(completion: @escaping (String) -> Void) {
+        self.completion = completion
+    }
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.gray)
+                .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+                .shadow(color: .white.opacity(0.05), radius: 4, x: 0, y: -2)
+
+            BrightnessVolumeBarView(completion: completion)
+        }
+        .frame(width: 265, height: 80)
+    }
+}
+
+struct BrightnessVolumeBarView: View {
+    @State private var progress: Double = 0.5 // Initial value
+    
+    var completion: (String) -> Void
+    
+    init(completion: @escaping (String) -> Void) {
+        self.completion = completion
+    }
+
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            // Background bar
+            RoundedRectangle(cornerRadius: 20)
+                .frame(height: 30)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.gray)
+                )
+                .shadow(radius: 6)
+
+            // Progress bar
+            GeometryReader { geometry in
+                HStack(spacing: 0) {
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.white)
+                        .frame(width: geometry.size.width * progress)
+                    Spacer(minLength: 0)
+                }
+                .frame(height: 30)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            let newProgress = min(max(0, value.location.x / geometry.size.width), 1)
+                            progress = newProgress
+                            handleValueChange(progress)
+                        }
+                )
+            }
+            .frame(height: 30)
+        }
+        .frame(width: 200, height: 30)
+    }
+    
+    @State private var previousRange: Int?
+
+    func handleValueChange(_ newValue: Double) {
+        guard newValue >= 0.0, newValue <= 1.0 else { return }
+
+        let currentRange = Int(newValue * 10)
+
+        if let previous = previousRange, currentRange != previous {
+            if currentRange < previous {
+                completion("down")
+            } else {
+                completion("up")
+            }
+        }
+        previousRange = currentRange
     }
 }
