@@ -155,7 +155,9 @@ extension ConnectionManager: MCNearbyServiceBrowserDelegate {
 
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String: String]?) {
         DispatchQueue.main.async {
-            if self.availablePeer == nil {
+            if let availablePeer = self.availablePeer {
+                print("Peer available: \(availablePeer)")
+            } else {
                 self.availablePeer = peerID
                 self.connectedPeerName = peerID.displayName
             }

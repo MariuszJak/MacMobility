@@ -48,10 +48,13 @@ struct WorkSpaceControlItem: Identifiable {
 
 struct iOSMainView: View {
     @UserDefault(Preferences.Key.didSeenDependencyScreens) var didSeenDependencyScreens = false
+    var lockLandscape: Bool {
+        KeychainManager().retrieve(key: .lockLandscape) ?? true
+    }
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.colorScheme) var colorScheme
     @State var currentPage: Int = 1
-    @StateObject var connectionManager = ConnectionManager()
+    @StateObject var connectionManager: ConnectionManager
     @StateObject private var orientationObserver = OrientationObserver()
     @State var startPos: CGPoint = .zero
     @State var isSwipping = true
@@ -60,6 +63,7 @@ struct iOSMainView: View {
     @State private var trigger = false
     @State private var showsWorkspaces = false
     @State private var showsDisconnectAlert = false
+    @State private var showsAppSettings = false
 
     var spacing: CGFloat = 12.0
     var regularFontSize: CGFloat {
@@ -73,6 +77,10 @@ struct iOSMainView: View {
     }
     var itemsSpacing: CGFloat {
         isIPad ? 21 : 6
+    }
+    
+    init(connectionManager: ConnectionManager) {
+        self._connectionManager = .init(wrappedValue: connectionManager)
     }
         
     var body: some View {
@@ -90,6 +98,9 @@ struct iOSMainView: View {
                         disconnectButtonView
                     }
                 }
+            }
+            .fullScreenCover(isPresented: $showsAppSettings) {
+                SettingsView(isPresented: $showsAppSettings)
             }
         }
         .alert("Test", isPresented: $connectionManager.receivedAlert) {
@@ -142,7 +153,9 @@ struct iOSMainView: View {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
             }
             .padding(.vertical, 16)
-            .frame(width: orientationObserver.orientation.isLandscape ? 1100.0 : (isIPadPro13Inch() ? 900.0 : 700.0))
+            .if(!lockLandscape) {
+                $0.frame(width: orientationObserver.orientation.isLandscape ? 1100.0 : (isIPadPro13Inch() ? 900.0 : 700.0))
+            }
             .gesture(
                 DragGesture()
                     .onEnded { value in
@@ -161,7 +174,9 @@ struct iOSMainView: View {
         } else {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
-                    .frame(width: orientationObserver.orientation.isLandscape ? 650.0 : 300)
+                    .if(!lockLandscape) {
+                        $0.frame(width: orientationObserver.orientation.isLandscape ? 650.0 : 300)
+                    }
                 Spacer()
             }
             .padding(.all, 16)
@@ -237,6 +252,10 @@ struct iOSMainView: View {
                                     .frame(width: itemsSize, height: itemsSize)
                             }
                             .hoverEffect(.highlight)
+                        } else {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.red)
+                                .frame(width: itemsSize, height: itemsSize)
                         }
                     case .utility:
                         if let data = test.imageData,
@@ -379,15 +398,25 @@ struct iOSMainView: View {
             }
             Spacer()
             VStack {
-                if connectionManager.pairingStatus == .paired {
-                    Button {
-                        showsDisconnectAlert = true
-                    } label: {
-                        Image(.exit)
-                            .resizable()
-                            .renderingMode(.template)
-                            .foregroundStyle(Color.gray)
-                            .frame(width: 32, height: 32)
+                HStack {
+                    Button(action: {
+                        showsAppSettings = true
+                    }) {
+                        Image(systemName: "gear")
+                            .imageScale(.large)
+                            .foregroundColor(.primary)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    if connectionManager.pairingStatus == .paired {
+                        Button {
+                            showsDisconnectAlert = true
+                        } label: {
+                            Image(.exit)
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundStyle(Color.gray)
+                                .frame(width: 32, height: 32)
+                        }
                     }
                 }
             }

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C013BE7D2DB940DF0038F1B1 /* OrientationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C013BE7C2DB940DF0038F1B1 /* OrientationManager.swift */; };
+		C013BF522DB96E040038F1B1 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C013BF512DB96E040038F1B1 /* SettingsView.swift */; };
+		C013BF542DB96E170038F1B1 /* BackgroundBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C013BF532DB96E170038F1B1 /* BackgroundBlurView.swift */; };
 		C01B42012BA3A4B7006C5C37 /* CoreDataSPM in Frameworks */ = {isa = PBXBuildFile; productRef = C01B42002BA3A4B7006C5C37 /* CoreDataSPM */; };
 		C01B42042BA3A4D0006C5C37 /* CoreDataSPM in Frameworks */ = {isa = PBXBuildFile; productRef = C01B42032BA3A4D0006C5C37 /* CoreDataSPM */; };
 		C01B42092BA3A598006C5C37 /* CoreDataSPM in Frameworks */ = {isa = PBXBuildFile; productRef = C01B42082BA3A598006C5C37 /* CoreDataSPM */; };
@@ -17,7 +20,7 @@
 		C071D7122DB3C74000ADD746 /* OrientationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071D7112DB3C74000ADD746 /* OrientationObserver.swift */; };
 		C071D7142DB3C75A00ADD746 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071D7132DB3C75A00ADD746 /* PrimaryButton.swift */; };
 		C071D7162DB3C77700ADD746 /* UIImage+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071D7152DB3C77700ADD746 /* UIImage+Ext.swift */; };
-		C09774E52B5C22A000F4FFE6 /* MobilityControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E42B5C22A000F4FFE6 /* MobilityControlApp.swift */; };
+		C09774E52B5C22A000F4FFE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09774E42B5C22A000F4FFE6 /* AppDelegate.swift */; };
 		C09774E92B5C22A100F4FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774E82B5C22A100F4FFE6 /* Assets.xcassets */; };
 		C09774EC2B5C22A100F4FFE6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */; };
 		C09775132B5C233B00F4FFE6 /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775112B5C233B00F4FFE6 /* String+Ext.swift */; };
@@ -30,6 +33,7 @@
 		C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */; };
 		C0BDB29D2BA3AF5800B36D19 /* Swiftly in Frameworks */ = {isa = PBXBuildFile; productRef = C0BDB29C2BA3AF5800B36D19 /* Swiftly */; };
 		C0DD86152DB774C600B85FB1 /* PlusButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DD86142DB774C600B85FB1 /* PlusButtonView.swift */; };
+		C0DD86D12DB8DB7000B85FB1 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C0DD86D02DB8DB7000B85FB1 /* Launch Screen.storyboard */; };
 		C0EAFC1D2D9061A400044947 /* AnimatedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -53,6 +57,9 @@
 /* Begin PBXFileReference section */
 		C00139EF2BA436C100FE558C /* Swiftly */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Swiftly; sourceTree = "<group>"; };
 		C00139F02BA436C800FE558C /* CoreDataSPM */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CoreDataSPM; sourceTree = "<group>"; };
+		C013BE7C2DB940DF0038F1B1 /* OrientationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationManager.swift; sourceTree = "<group>"; };
+		C013BF512DB96E040038F1B1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C013BF532DB96E170038F1B1 /* BackgroundBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBlurView.swift; sourceTree = "<group>"; };
 		C064BA5A2D876ED10091E2BE /* Color+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Ext.swift"; sourceTree = "<group>"; };
 		C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		C064BA5E2D876F080091E2BE /* Optional+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Ext.swift"; sourceTree = "<group>"; };
@@ -61,7 +68,7 @@
 		C071D7132DB3C75A00ADD746 /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
 		C071D7152DB3C77700ADD746 /* UIImage+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Ext.swift"; sourceTree = "<group>"; };
 		C09774E12B5C22A000F4FFE6 /* MacMobility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMobility.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C09774E42B5C22A000F4FFE6 /* MobilityControlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilityControlApp.swift; sourceTree = "<group>"; };
+		C09774E42B5C22A000F4FFE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C09774E82B5C22A100F4FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C09774EB2B5C22A100F4FFE6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C09774F12B5C22A100F4FFE6 /* MacMobilityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacMobilityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,6 +83,7 @@
 		C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionSenable.swift; sourceTree = "<group>"; };
 		C09775222B5C259000F4FFE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C0DD86142DB774C600B85FB1 /* PlusButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusButtonView.swift; sourceTree = "<group>"; };
+		C0DD86D02DB8DB7000B85FB1 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,10 +152,11 @@
 				C09775152B5C234F00F4FFE6 /* Managers */,
 				C09775102B5C233000F4FFE6 /* Extensions */,
 				C0EAFC1B2D90619A00044947 /* Views */,
-				C09774E42B5C22A000F4FFE6 /* MobilityControlApp.swift */,
+				C09774E42B5C22A000F4FFE6 /* AppDelegate.swift */,
 				C09775182B5C239600F4FFE6 /* iOSMainView.swift */,
 				C097751A2B5C239B00F4FFE6 /* QRCodeScanner.swift */,
 				C097751C2B5C23A100F4FFE6 /* AppDependencyScreen.swift */,
+				C0DD86D02DB8DB7000B85FB1 /* Launch Screen.storyboard */,
 				C09774E82B5C22A100F4FFE6 /* Assets.xcassets */,
 				C09774EA2B5C22A100F4FFE6 /* Preview Content */,
 			);
@@ -183,6 +192,7 @@
 				C097751E2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift */,
 				C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */,
 				C071D7112DB3C74000ADD746 /* OrientationObserver.swift */,
+				C013BE7C2DB940DF0038F1B1 /* OrientationManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -200,6 +210,8 @@
 				C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */,
 				C071D7132DB3C75A00ADD746 /* PrimaryButton.swift */,
 				C0DD86142DB774C600B85FB1 /* PlusButtonView.swift */,
+				C013BF512DB96E040038F1B1 /* SettingsView.swift */,
+				C013BF532DB96E170038F1B1 /* BackgroundBlurView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -316,6 +328,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0DD86D12DB8DB7000B85FB1 /* Launch Screen.storyboard in Resources */,
 				C09774EC2B5C22A100F4FFE6 /* Preview Assets.xcassets in Resources */,
 				C09774E92B5C22A100F4FFE6 /* Assets.xcassets in Resources */,
 			);
@@ -343,9 +356,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				C09775172B5C235700F4FFE6 /* ConnectionManager.swift in Sources */,
+				C013BF542DB96E170038F1B1 /* BackgroundBlurView.swift in Sources */,
 				C09775132B5C233B00F4FFE6 /* String+Ext.swift in Sources */,
 				C071D7162DB3C77700ADD746 /* UIImage+Ext.swift in Sources */,
+				C013BE7D2DB940DF0038F1B1 /* OrientationManager.swift in Sources */,
 				C0EAFC1D2D9061A400044947 /* AnimatedButton.swift in Sources */,
+				C013BF522DB96E040038F1B1 /* SettingsView.swift in Sources */,
 				C09775142B5C233B00F4FFE6 /* Array+Ext.swift in Sources */,
 				C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */,
 				C0DD86152DB774C600B85FB1 /* PlusButtonView.swift in Sources */,
@@ -354,7 +370,7 @@
 				C071D7122DB3C74000ADD746 /* OrientationObserver.swift in Sources */,
 				C097751D2B5C23A100F4FFE6 /* AppDependencyScreen.swift in Sources */,
 				C097751B2B5C239B00F4FFE6 /* QRCodeScanner.swift in Sources */,
-				C09774E52B5C22A000F4FFE6 /* MobilityControlApp.swift in Sources */,
+				C09774E52B5C22A000F4FFE6 /* AppDelegate.swift in Sources */,
 				C09775192B5C239600F4FFE6 /* iOSMainView.swift in Sources */,
 				C064BA5B2D876ED10091E2BE /* Color+Ext.swift in Sources */,
 				C064BA612D876F210091E2BE /* View+Ext.swift in Sources */,
@@ -529,9 +545,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Scan QR code.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MobilityControl needs this permission for connectic to MacOS version.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.8;
@@ -569,9 +584,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Scan QR code.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MobilityControl needs this permission for connectic to MacOS version.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.8;

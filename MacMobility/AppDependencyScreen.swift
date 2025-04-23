@@ -152,3 +152,81 @@ struct OrientationStack<Content: View>: View {
         }
     }
 }
+
+public enum Keys: String, CaseIterable {
+    case lockLandscape
+}
+
+public protocol KeychainManagerRepresentable {
+    func save<T: Codable>(key: Keys, value: T) -> Bool
+    func retrieve<T: Codable>(key: Keys) -> T?
+    func delete(key: Keys) -> Bool
+    func clear() -> Bool
+}
+
+public class KeychainManager: KeychainManagerRepresentable {
+    public init() {}
+    
+    @discardableResult
+    public func save<T: Codable>(key: Keys, value: T) -> Bool {
+        let encoder = JSONEncoder()
+        do {
+            let valueData = try encoder.encode(value)
+            
+            let query: [String: Any] = [
+                kSecClass as String: kSecClassGenericPassword,
+                kSecAttrAccount as String: key.rawValue,
+                kSecValueData as String: valueData
+            ]
+            
+            SecItemDelete(query as CFDictionary)
+            
+            let status = SecItemAdd(query as CFDictionary, nil)
+            return status == errSecSuccess
+        } catch {
+            print("Failed to encode object: \(error)")
+            return false
+        }
+    }
+    
+    public func retrieve<T: Codable>(key: Keys) -> T? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key.rawValue,
+            kSecReturnData as String: kCFBooleanTrue!,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        
+        if status == errSecSuccess, let data = result as? Data {
+            let decoder = JSONDecoder()
+            do {
+                let object = try decoder.decode(T.self, from: data)
+                return object
+            } catch {
+                print("Failed to decode object: \(error)")
+                return nil
+            }
+        }
+        return nil
+    }
+    
+    public func delete(key: Keys) -> Bool {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key.rawValue
+        ]
+        
+        let status = SecItemDelete(query as CFDictionary)
+        return status == errSecSuccess
+    }
+    
+    public func clear() -> Bool {
+        for key in Keys.allCases {
+            _ = delete(key: key)
+        }
+        return true
+    }
+}
