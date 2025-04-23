@@ -29,6 +29,7 @@
 		C097751F2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C097751E2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift */; };
 		C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */; };
 		C0BDB29D2BA3AF5800B36D19 /* Swiftly in Frameworks */ = {isa = PBXBuildFile; productRef = C0BDB29C2BA3AF5800B36D19 /* Swiftly */; };
+		C0DD86152DB774C600B85FB1 /* PlusButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DD86142DB774C600B85FB1 /* PlusButtonView.swift */; };
 		C0EAFC1D2D9061A400044947 /* AnimatedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +75,7 @@
 		C097751E2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConnectionManager+iOS+Ext.swift"; sourceTree = "<group>"; };
 		C09775202B5C23EA00F4FFE6 /* ConnectionSenable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionSenable.swift; sourceTree = "<group>"; };
 		C09775222B5C259000F4FFE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C0DD86142DB774C600B85FB1 /* PlusButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusButtonView.swift; sourceTree = "<group>"; };
 		C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -197,6 +199,7 @@
 			children = (
 				C0EAFC1C2D9061A400044947 /* AnimatedButton.swift */,
 				C071D7132DB3C75A00ADD746 /* PrimaryButton.swift */,
+				C0DD86142DB774C600B85FB1 /* PlusButtonView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -345,6 +348,7 @@
 				C0EAFC1D2D9061A400044947 /* AnimatedButton.swift in Sources */,
 				C09775142B5C233B00F4FFE6 /* Array+Ext.swift in Sources */,
 				C09775212B5C23EA00F4FFE6 /* ConnectionSenable.swift in Sources */,
+				C0DD86152DB774C600B85FB1 /* PlusButtonView.swift in Sources */,
 				C064BA5D2D876EF60091E2BE /* UIColor+Ext.swift in Sources */,
 				C097751F2B5C23E500F4FFE6 /* ConnectionManager+iOS+Ext.swift in Sources */,
 				C071D7122DB3C74000ADD746 /* OrientationObserver.swift in Sources */,

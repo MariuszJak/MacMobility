@@ -309,14 +309,7 @@ struct iOSMainView: View {
                         }
                     }
                 } else {
-                    VStack {
-                    }
-                    .frame(width: itemsSize, height: itemsSize)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20.0)
-                            .fill(.gray.opacity(0.2))
-                        
-                    )
+                    PlusButtonView(itemSize: .init(width: itemsSize, height: itemsSize))
                 }
             }
             .padding(.horizontal)
