@@ -9,9 +9,11 @@ import SwiftUI
 
 class SettingsViewModel: ObservableObject {
     @Published var lockLandscape = true
+    @Published var autoconnect = false
     
     init() {
-        self._lockLandscape = .init(initialValue: KeychainManager().retrieve(key: .lockLandscape) ?? true)
+        self._lockLandscape = .init(initialValue: KeychainManager().retrieve(key: .lockLandscape) ?? Keys.lockLandscape.defaultValue)
+        self._autoconnect = .init(initialValue: KeychainManager().retrieve(key: .autoconnect) ?? Keys.autoconnect.defaultValue)
     }
 }
 
@@ -42,6 +44,14 @@ struct SettingsView: View {
                         .onChange(of: viewModel.lockLandscape) { newValue in
                             KeychainManager().save(key: .lockLandscape, value: newValue)
                             OrientationManager.lock(to: newValue ? .landscape : .all)
+                        }
+                        .padding()
+                        .background(.thinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .padding(.horizontal)
+                    Toggle("Autoconnect to last paired device (experimental)", isOn: $viewModel.autoconnect)
+                        .onChange(of: viewModel.autoconnect) { newValue in
+                            KeychainManager().save(key: .autoconnect, value: newValue)
                         }
                         .padding()
                         .background(.thinMaterial)

@@ -23,6 +23,11 @@ struct RunningAppData: Codable, Equatable, Identifiable {
     let imageData: Data?
 }
 
+enum AppState {
+    case foreground
+    case background
+}
+
 class ConnectionManager: NSObject, ObservableObject {
     @Published var availablePeer: MCPeerID?
     @Published var connectedPeerName: String?
@@ -32,6 +37,7 @@ class ConnectionManager: NSObject, ObservableObject {
     @Published var invitationHandler: ((Bool, MCSession?) -> Void)?
     @Published var selectedWorkspace: WorkspaceControl?
     @Published var pairingStatus: PairingStatus = .notPaired
+    public var appState: AppState?
     public let serviceType = "magic-trackpad"
     public var myPeerId: MCPeerID = {
         return MCPeerID(displayName: UIDevice.current.name)
@@ -55,6 +61,7 @@ class ConnectionManager: NSObject, ObservableObject {
     @Published public var shortcutsList: [ShortcutsListData] = []
     @Published public var shortcutsDiffList: [ShortcutsDiffListData] = []
     @Published public var alert: AlertMessage?
+    @Published public var isInitialLoading: Bool = true
     public var rowCount = 4
 
     override init() {
@@ -135,12 +142,18 @@ class ConnectionManager: NSObject, ObservableObject {
         session.disconnect()
         pairingStatus = .notPaired
         toggleAdvertising()
+        isInitialLoading = true
     }
+}
+
+struct ConnectionRequest: Codable {
+    let shouldConnect: Bool
 }
 
 extension ConnectionManager: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         DispatchQueue.main.async {
+            self.isInitialLoading = true
             self.receivedInvite = true
             self.receivedInviteFrom = peerID
             self.invitationHandler = invitationHandler
@@ -156,7 +169,7 @@ extension ConnectionManager: MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String: String]?) {
         DispatchQueue.main.async {
             if let availablePeer = self.availablePeer {
-                print("Peer available: \(availablePeer)")
+                self.availablePeer = availablePeer
             } else {
                 self.availablePeer = peerID
                 self.connectedPeerName = peerID.displayName

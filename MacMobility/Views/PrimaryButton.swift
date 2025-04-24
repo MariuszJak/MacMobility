@@ -19,9 +19,9 @@ struct PrimaryButton: View {
             HStack(spacing: 2) {
                 Text(title)
                     .foregroundStyle(colorScheme == .dark ? .black : .white)
-                    .font(.system(size: 16.0, weight: .bold))
+                    .font(.system(size: 14.0, weight: .bold))
             }
-            .padding()
+            .padding(.all, 10.0)
             .frame(maxWidth: .infinity)
             .background(RoundedRectangle(cornerRadius: 12).fill(isSelected ? colorScheme == .dark ? .white : .black : .gray))
             .shadow(radius: 2)

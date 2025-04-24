@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Swiftly
+import MultipeerConnectivity
 
 struct Preferences {
     enum Key {
@@ -47,9 +48,10 @@ struct WorkSpaceControlItem: Identifiable {
 }
 
 struct iOSMainView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @UserDefault(Preferences.Key.didSeenDependencyScreens) var didSeenDependencyScreens = false
     var lockLandscape: Bool {
-        KeychainManager().retrieve(key: .lockLandscape) ?? true
+        KeychainManager().retrieve(key: .lockLandscape) ?? Keys.lockLandscape.defaultValue
     }
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.colorScheme) var colorScheme
@@ -64,6 +66,9 @@ struct iOSMainView: View {
     @State private var showsWorkspaces = false
     @State private var showsDisconnectAlert = false
     @State private var showsAppSettings = false
+    @State var showsConnectionView = false
+    
+    @State private var connectionAfterTutorial: (() -> Void)?
 
     var spacing: CGFloat = 12.0
     var regularFontSize: CGFloat {
@@ -73,10 +78,17 @@ struct iOSMainView: View {
         UIDevice.current.localizedModel.contains("iPad")
     }
     var itemsSize: CGFloat {
-        isIPad ? (orientationObserver.orientation.isLandscape ? 140 : (isIPadPro13Inch() ? 110 : 90)) : 80
+        if isIPad {
+            if lockLandscape {
+                return 140.0
+            }
+            return (orientationObserver.orientation.isLandscape ? 140 : (isIPadPro13Inch() ? 110 : 90))
+        } else {
+           return 80
+        }
     }
     var itemsSpacing: CGFloat {
-        isIPad ? 21 : 6
+        isIPad ? 21 : 8
     }
     
     init(connectionManager: ConnectionManager) {
@@ -98,12 +110,34 @@ struct iOSMainView: View {
                         disconnectButtonView
                     }
                 }
+                if connectionManager.pairingStatus == .pairining || connectionManager.pairingStatus == .paired {
+                    if connectionManager.isInitialLoading {
+                        FullscreenLoadingView(isAnimating: .constant(true))
+                    }
+                }
             }
             .fullScreenCover(isPresented: $showsAppSettings) {
                 SettingsView(isPresented: $showsAppSettings)
             }
+            .fullScreenCover(isPresented: $showsConnectionView) {
+                if let availablePeer = connectionManager.availablePeer {
+                    PairingView(
+                        connectionManager: connectionManager,
+                        isPresented: $showsConnectionView,
+                        deviceName: availablePeer.displayName) {
+                            let context = try? JSONEncoder().encode(ConnectionRequest(shouldConnect: true))
+                            connectionManager.isInitialLoading = true
+                            connectionManager.invitePeer(with: availablePeer, context: context)
+                            showsConnectionView = false
+                        } onReject: {
+                            showsConnectionView = false
+                        }
+                } else {
+                    NoPairingDevicesView(isPresented: $showsConnectionView)
+                }
+            }
         }
-        .alert("Test", isPresented: $connectionManager.receivedAlert) {
+        .alert("Commandline Response", isPresented: $connectionManager.receivedAlert) {
             Button("Close") {
                 connectionManager.receivedAlert = false
             }
@@ -111,6 +145,18 @@ struct iOSMainView: View {
             VStack {
                 if let description = connectionManager.alert?.message {
                     Text(description)
+                }
+            }
+        }
+        .onReceive(connectionManager.$availablePeer) { availablePeer in
+            if availablePeer != nil {
+                if didSeenDependencyScreens &&
+                    connectionManager.appState == .foreground {
+                    showsConnectionView = true
+                } else {
+                    connectionAfterTutorial = {
+                        showsConnectionView = true
+                    }
                 }
             }
         }
@@ -124,10 +170,12 @@ struct iOSMainView: View {
         .sheet(isPresented: $showDependencyScreen, onDismiss: {
             didSeenDependencyScreens = true
         }, content: {
-            AppDependencyScreen()
-                .if(!didSeenDependencyScreens) {
-                    $0.interactiveDismissDisabled()
-                }
+            AppDependencyScreen() {
+                connectionAfterTutorial?()
+            }
+            .if(!didSeenDependencyScreens) {
+                $0.interactiveDismissDisabled()
+            }
         })
         .onAppear {
             connectionManager.startAdvertising()
@@ -143,8 +191,6 @@ struct iOSMainView: View {
         .animation(.easeInOut, value: $connectionManager.pairingStatus.wrappedValue)
         .padding(.horizontal)
     }
-    
-    
     
     @ViewBuilder
     private var shortcutItemsGridView: some View {
@@ -175,7 +221,7 @@ struct iOSMainView: View {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
                     .if(!lockLandscape) {
-                        $0.frame(width: orientationObserver.orientation.isLandscape ? 650.0 : 300)
+                        $0.frame(width: orientationObserver.orientation.isLandscape ? 670.0 : 300)
                     }
                 Spacer()
             }
@@ -407,22 +453,21 @@ struct iOSMainView: View {
                             .foregroundColor(.primary)
                     }
                     .buttonStyle(PlainButtonStyle())
+                    .padding(.trailing, 8.0)
                     if connectionManager.pairingStatus == .paired {
                         Button {
                             showsDisconnectAlert = true
                         } label: {
-                            Image(.exit)
-                                .resizable()
-                                .renderingMode(.template)
-                                .foregroundStyle(Color.gray)
-                                .frame(width: 32, height: 32)
+                            Image(systemName: "xmark.circle.fill")
+                                .imageScale(.large)
+                                .foregroundColor(.primary)
                         }
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
             }
         }
         .padding(.bottom, 28)
-        .padding(.horizontal, 48)
         .alert("Are you sure you want to disconnect?",
                isPresented: $showsDisconnectAlert) {
             HStack {
@@ -438,20 +483,24 @@ struct iOSMainView: View {
     private var qrCodeScannerButtonView: some View {
         if connectionManager.pairingStatus == .notPaired {
             VStack(spacing: 16.0) {
-                Spacer()
                 VStack {
-                    Image("ios-qr-scanner")
-                        .renderingMode(.template)
+                    Text("Check for connection")
+                        .font(.largeTitle)
+                        .bold()
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                        .padding(.bottom, 16.0)
+                    Image(.tapToConnect)
                         .resizable()
-                        .foregroundStyle(colorScheme == .dark ? Color.white : Color.black)
-                        .frame(width: 80, height: 80.0)
-                    Text("Tap to scan QR code")
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 90, height: 90)
+                        .padding(.bottom, 26.0)
+                    Text("Tap to check available connection")
                         .font(.system(size: 16.0))
                 }
                 .onTapGesture {
-                    showQRScaner = true
+                    showsConnectionView = true
                 }
-                Spacer()
                 HStack {
                     Text("Do you have companion app? ")
                         .font(.system(size: 12, weight: .regular))

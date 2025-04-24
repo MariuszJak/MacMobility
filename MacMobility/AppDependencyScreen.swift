@@ -15,6 +15,8 @@ enum WorkspaceControl: String, CaseIterable {
 
 struct AppDependencyScreen: View {
     @Environment(\.dismiss) private var dismiss
+    let completion: () -> Void
+    
     var body: some View {
         VStack {
             TabView {
@@ -79,6 +81,7 @@ struct AppDependencyScreen: View {
                 .padding(.bottom, 22.0)
             PrimaryButton(title: "Start!", isSelected: true) {
                 dismiss()
+                completion()
             }
             .frame(width: 200.0)
         }
@@ -155,6 +158,20 @@ struct OrientationStack<Content: View>: View {
 
 public enum Keys: String, CaseIterable {
     case lockLandscape
+    case autoconnect
+    
+    var defaultValue: Bool {
+        switch self {
+        case .lockLandscape:
+            return true
+        case .autoconnect:
+            #if DEBUG
+            return true
+            #elseif RELEASE
+            return false
+            #endif
+        }
+    }
 }
 
 public protocol KeychainManagerRepresentable {

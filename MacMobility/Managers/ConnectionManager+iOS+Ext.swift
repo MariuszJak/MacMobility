@@ -273,6 +273,7 @@ extension ConnectionManager {
             if let shortcuts = try? JSONDecoder().decode(ShortcutsResponseDiff.self, from: data) {
                 guard shortcuts.shortcutTitle == "shortcutTitleDiff" else { return }
                 self.shortcutsDiffList = [ShortcutsDiffListData(shortcutsDiff: shortcuts.shortcutsDiff)]
+                self.isInitialLoading = false
             }
             
             if let alert = try? JSONDecoder().decode(AlertMessageResponse.self, from: data) {
