@@ -35,6 +35,7 @@ extension UIDeviceOrientation {
     }
     
     var isValidInterfaceOrientation: Bool {
+        if lockLandscape { return true }
         return self == .portrait || self == .landscapeLeft || self == .landscapeRight || self == .portraitUpsideDown
     }
 
@@ -43,9 +44,7 @@ extension UIDeviceOrientation {
     }
 
     var isLandscape: Bool {
-        if lockLandscape {
-            return true
-        }
+        if lockLandscape { return true }
         return self == .landscapeLeft || self == .landscapeRight
     }
 }
