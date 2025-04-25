@@ -50,9 +50,7 @@ struct WorkSpaceControlItem: Identifiable {
 struct iOSMainView: View {
     @Environment(\.scenePhase) private var scenePhase
     @UserDefault(Preferences.Key.didSeenDependencyScreens) var didSeenDependencyScreens = false
-    var lockLandscape: Bool {
-        KeychainManager().retrieve(key: .lockLandscape) ?? Keys.lockLandscape.defaultValue
-    }
+
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.colorScheme) var colorScheme
     @State var currentPage: Int = 1
@@ -79,9 +77,6 @@ struct iOSMainView: View {
     }
     var itemsSize: CGFloat {
         if isIPad {
-            if lockLandscape {
-                return 140.0
-            }
             return (orientationObserver.orientation.isLandscape ? 140 : (isIPadPro13Inch() ? 110 : 90))
         } else {
            return 80
@@ -199,9 +194,7 @@ struct iOSMainView: View {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
             }
             .padding(.vertical, 16)
-            .if(!lockLandscape) {
-                $0.frame(width: orientationObserver.orientation.isLandscape ? 1100.0 : (isIPadPro13Inch() ? 900.0 : 700.0))
-            }
+            .frame(width: orientationObserver.orientation.isLandscape ? 1100.0 : (isIPadPro13Inch() ? 900.0 : 700.0))
             .gesture(
                 DragGesture()
                     .onEnded { value in
@@ -220,9 +213,7 @@ struct iOSMainView: View {
         } else {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
-                    .if(!lockLandscape) {
-                        $0.frame(width: orientationObserver.orientation.isLandscape ? 670.0 : 300)
-                    }
+                    .frame(width: orientationObserver.orientation.isLandscape ? 670.0 : 300)
                 Spacer()
             }
             .padding(.all, 16)

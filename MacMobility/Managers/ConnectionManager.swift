@@ -77,6 +77,12 @@ class ConnectionManager: NSObject, ObservableObject {
 
         subscribeForRotationChange()
         
+        // For debugging, only for simulator
+//        #if DEBUG
+//        pairingStatus = .paired
+//        isInitialLoading = false
+//        #endif
+        
         $shortcutsDiffList
             .receive(on: RunLoop.main)
             .sink { diffs in

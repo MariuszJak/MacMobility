@@ -27,7 +27,6 @@ struct OrientationManager {
             windowScene.requestGeometryUpdate(preferences) { error in
                 print("Failed to request geometry update: \(error)")
             }
-
         } else {
             let value = orientation == .landscape ? UIInterfaceOrientation.landscapeRight.rawValue : UIInterfaceOrientation.portrait.rawValue
             UIDevice.current.setValue(value, forKey: "orientation")

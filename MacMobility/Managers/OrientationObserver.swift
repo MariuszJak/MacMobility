@@ -30,6 +30,10 @@ class OrientationObserver: ObservableObject {
 }
 
 extension UIDeviceOrientation {
+    var lockLandscape: Bool {
+        KeychainManager().retrieve(key: .lockLandscape) ?? Keys.lockLandscape.defaultValue
+    }
+    
     var isValidInterfaceOrientation: Bool {
         return self == .portrait || self == .landscapeLeft || self == .landscapeRight || self == .portraitUpsideDown
     }
@@ -39,6 +43,9 @@ extension UIDeviceOrientation {
     }
 
     var isLandscape: Bool {
-        self == .landscapeLeft || self == .landscapeRight
+        if lockLandscape {
+            return true
+        }
+        return self == .landscapeLeft || self == .landscapeRight
     }
 }
