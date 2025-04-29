@@ -173,6 +173,7 @@ public enum UtilityType: String, Codable {
     case commandline
     case multiselection
     case automation
+    case macro
 }
 
 enum ChangeType: String, Codable {
@@ -301,6 +302,7 @@ public enum Browsers: String, CaseIterable, Identifiable, Codable {
     
     case chrome
     case safari
+    case orion
     
     var icon: String {
         switch self {
@@ -308,6 +310,8 @@ public enum Browsers: String, CaseIterable, Identifiable, Codable {
             return "chrome-logo"
         case .safari:
             return "safari-logo"
+        case .orion:
+            return "orion-browser-logo"
         }
     }
 }
