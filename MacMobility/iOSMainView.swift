@@ -264,10 +264,11 @@ struct iOSMainView: View {
                                     if test.showTitleOnIcon ?? true {
                                         Text(test.title)
                                             .font(.system(size: regularFontSize))
-                                            .foregroundStyle(Color.white)
                                             .multilineTextAlignment(.center)
                                             .padding(.all, 3)
-                                            .stroke(color: .black)
+                                            .lineLimit(3)
+                                            .outlinedText()
+                                            .foregroundStyle(Color.white)
                                     }
                                 }
                             }
@@ -309,10 +310,11 @@ struct iOSMainView: View {
                                     if test.showTitleOnIcon ?? true {
                                         Text(test.title)
                                             .font(.system(size: regularFontSize))
-                                            .foregroundStyle(Color.white)
                                             .multilineTextAlignment(.center)
                                             .padding(.all, 3)
-                                            .stroke(color: .black)
+                                            .lineLimit(3)
+                                            .outlinedText()
+                                            .foregroundStyle(Color.white)
                                     }
                                 }
                             }
@@ -333,10 +335,11 @@ struct iOSMainView: View {
                                     if test.showTitleOnIcon ?? true {
                                         Text(test.title)
                                             .font(.system(size: regularFontSize))
-                                            .foregroundStyle(Color.white)
                                             .multilineTextAlignment(.center)
                                             .padding(.all, 3)
-                                            .stroke(color: .black)
+                                            .lineLimit(3)
+                                            .outlinedText()
+                                            .foregroundStyle(Color.white)
                                     }
                                 }
                             }
@@ -355,9 +358,10 @@ struct iOSMainView: View {
                                     if test.showTitleOnIcon ?? true {
                                         Text(test.title)
                                             .font(.system(size: regularFontSize))
-                                            .foregroundStyle(Color.white)
                                             .multilineTextAlignment(.center)
-                                            .stroke(color: .black)
+                                            .lineLimit(3)
+                                            .outlinedText()
+                                            .foregroundStyle(Color.white)
                                     }
                                 }
                             }
