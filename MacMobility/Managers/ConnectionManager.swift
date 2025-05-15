@@ -29,11 +29,11 @@ enum AppState {
 }
 
 class ConnectionManager: NSObject, ObservableObject {
-    @Published var availablePeer: MCPeerID?
+    @Published var availablePeerWithName: (MCPeerID?, String)?
     @Published var connectedPeerName: String?
     @Published var receivedInvite: Bool = false
     @Published var receivedAlert: Bool = false
-    @Published var receivedInviteFrom: MCPeerID?
+    @Published var receivedInviteWithNameFrom: (MCPeerID, String)?
     @Published var invitationHandler: ((Bool, MCSession?) -> Void)?
     @Published var selectedWorkspace: WorkspaceControl?
     @Published var pairingStatus: PairingStatus = .notPaired
@@ -52,7 +52,7 @@ class ConnectionManager: NSObject, ObservableObject {
     public var subscriptions = Set<AnyCancellable>()
     public var isUpdating = false
     public var isConnecting: Bool {
-        availablePeer != nil && pairingStatus == .notPaired
+        availablePeerWithName != nil && pairingStatus == .notPaired
     }
 
     @Published public var appList: [AppListData] = []
@@ -66,7 +66,7 @@ class ConnectionManager: NSObject, ObservableObject {
 
     override init() {
         session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: .none)
-        serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)
+        serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: ["name": UIDevice.current.name], serviceType: serviceType)
         serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
 
         super.init()
@@ -125,7 +125,7 @@ class ConnectionManager: NSObject, ObservableObject {
     
     func stopBrowsing() {
         serviceBrowser.stopBrowsingForPeers()
-        availablePeer = nil
+        availablePeerWithName = nil
     }
     
     func toggleAdvertising() {
@@ -156,13 +156,26 @@ struct ConnectionRequest: Codable {
     let shouldConnect: Bool
 }
 
+struct DeviceName: Codable {
+    let name: String
+}
+
 extension ConnectionManager: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        DispatchQueue.main.async {
-            self.isInitialLoading = true
-            self.receivedInvite = true
-            self.receivedInviteFrom = peerID
-            self.invitationHandler = invitationHandler
+        if let context, let deviceName = try? JSONDecoder().decode(DeviceName.self, from: context) {
+            DispatchQueue.main.async {
+                self.isInitialLoading = true
+                self.receivedInvite = true
+                self.receivedInviteWithNameFrom = (peerID, deviceName.name)
+                self.invitationHandler = invitationHandler
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.isInitialLoading = true
+                self.receivedInvite = true
+                self.receivedInviteWithNameFrom = (peerID, peerID.displayName)
+                self.invitationHandler = invitationHandler
+            }
         }
     }
 }
@@ -174,18 +187,19 @@ extension ConnectionManager: MCNearbyServiceBrowserDelegate {
 
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String: String]?) {
         DispatchQueue.main.async {
-            if let availablePeer = self.availablePeer {
-                self.availablePeer = availablePeer
+            if let availablePeerWithName = self.availablePeerWithName {
+                self.availablePeerWithName = availablePeerWithName
             } else {
-                self.availablePeer = peerID
-                self.connectedPeerName = peerID.displayName
+                let name = info?["name"] ?? peerID.displayName
+                self.availablePeerWithName = (peerID, name)
+                self.connectedPeerName = name
             }
         }
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        guard availablePeer == peerID else { return }
-        availablePeer = nil
+        guard availablePeerWithName?.0 == peerID else { return }
+        availablePeerWithName = nil
     }
 }
 
