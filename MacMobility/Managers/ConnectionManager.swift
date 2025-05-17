@@ -33,10 +33,12 @@ class ConnectionManager: NSObject, ObservableObject {
     @Published var connectedPeerName: String?
     @Published var receivedInvite: Bool = false
     @Published var receivedAlert: Bool = false
+    @Published var receivedStartStreamCommand: Bool = false
     @Published var receivedInviteFrom: MCPeerID?
     @Published var invitationHandler: ((Bool, MCSession?) -> Void)?
     @Published var selectedWorkspace: WorkspaceControl?
     @Published var pairingStatus: PairingStatus = .notPaired
+    public var ipAddress: String?
     public var appState: AppState?
     public let serviceType = "magic-trackpad"
     public var myPeerId: MCPeerID = {
@@ -65,6 +67,7 @@ class ConnectionManager: NSObject, ObservableObject {
     public var rowCount = 4
 
     override init() {
+        print(UIDevice.current.model)
         session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: .none)
         serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)
         serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
@@ -193,6 +196,9 @@ extension ConnectionManager: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         DispatchQueue.main.async {
             self.pairingStatus = state == .connected ? .paired : .notPaired
+            if state == .notConnected, self.receivedStartStreamCommand {
+                self.receivedStartStreamCommand = false
+            }
             self.toggleAdvertising()
         }
     }
@@ -207,5 +213,64 @@ extension ConnectionManager: MCSessionDelegate {
 
     public func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
         log.error("Receiving resources is not supported")
+    }
+}
+
+import Network
+
+@MainActor
+class LiveStreamClient: ObservableObject {
+    var initialTouchLocation: CGPoint?
+    @Published var image: UIImage?
+
+    private var connection: NWConnection?
+    private var buffer = Data()
+
+    func connect(to host: String, port: UInt16 = 8888) {
+        let nwEndpoint = NWEndpoint.Host(host)
+        let nwPort = NWEndpoint.Port(rawValue: port)!
+
+        connection = NWConnection(host: nwEndpoint, port: nwPort, using: .tcp)
+        connection?.stateUpdateHandler = { newState in
+            print("Connection state: \(newState)")
+        }
+
+        connection?.start(queue: .global())
+        receiveLoop()
+    }
+
+    private func receiveLoop() {
+        connection?.receive(minimumIncompleteLength: 4, maximumLength: 4) { [weak self] lengthData, _, _, _ in
+            guard let self = self, let lengthData = lengthData, lengthData.count == 4 else {
+                print("Connection closed or failed")
+                return
+            }
+
+            let length = lengthData.withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+            self.receiveFrame(of: Int(length))
+        }
+    }
+
+    private func receiveFrame(of length: Int) {
+        connection?.receive(minimumIncompleteLength: length, maximumLength: length) { [weak self] data, _, _, _ in
+            guard let self = self, let data = data else {
+                print("Failed to receive frame data")
+                return
+            }
+
+            if let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self.image = image
+                }
+            }
+
+            // Loop to next frame
+            self.receiveLoop()
+        }
+    }
+
+    func disconnect() {
+        connection?.cancel()
+        connection = nil
     }
 }

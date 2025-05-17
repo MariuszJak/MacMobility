@@ -190,6 +190,12 @@ enum ChangeType: String, Codable {
     }
 }
 
+struct StartStream: Codable {
+    let title: String
+    let action: String
+    let ipAddress: String
+}
+
 struct SDiff: Codable {
     var item: ShortcutObject, from: Int?, to: Int?
 }
@@ -275,6 +281,16 @@ extension ConnectionManager {
                 guard shortcuts.shortcutTitle == "shortcutTitleDiff" else { return }
                 self.shortcutsDiffList = [ShortcutsDiffListData(shortcutsDiff: shortcuts.shortcutsDiff)]
                 self.isInitialLoading = false
+            }
+            
+            if let stream = try? JSONDecoder().decode(StartStream.self, from: data) {
+                guard stream.title == "MacMobilityStream" else { return }
+                if stream.action == "START" {
+                    self.ipAddress = stream.ipAddress
+                    self.receivedStartStreamCommand = true
+                } else if stream.action == "STOP" {
+                    self.receivedStartStreamCommand = false
+                }
             }
             
             if let alert = try? JSONDecoder().decode(AlertMessageResponse.self, from: data) {

@@ -111,6 +111,11 @@ struct iOSMainView: View {
                     }
                 }
             }
+            .fullScreenCover(isPresented: $connectionManager.receivedStartStreamCommand) {
+                if let ipAddress = connectionManager.ipAddress {
+                    StreamView(serverIP: ipAddress)
+                }
+            }
             .fullScreenCover(isPresented: $showsAppSettings) {
                 SettingsView(isPresented: $showsAppSettings)
             }
@@ -509,5 +514,39 @@ struct iOSMainView: View {
             }
             .frame(height: UIScreen.main.bounds.height - 106.0)
         }
+    }
+}
+
+
+import Foundation
+import SystemConfiguration
+
+struct StreamView: View {
+    @StateObject private var client = LiveStreamClient()
+    @GestureState private var dragOffset = CGSize.zero
+    @State private var tapLocation: CGPoint?
+    
+    private let serverIP: String
+    
+    init(serverIP: String) {
+        self.serverIP = serverIP
+    }
+
+    var body: some View {
+        VStack {
+            if let image = client.image {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .background(Color.black)
+            }
+        }
+        .onAppear {
+            client.connect(to: serverIP)
+        }
+        .onDisappear {
+            client.disconnect()
+        }
+        .ignoresSafeArea()
     }
 }
