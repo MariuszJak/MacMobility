@@ -67,9 +67,15 @@ class ConnectionManager: NSObject, ObservableObject {
     public var rowCount = 4
 
     override init() {
-        print(UIDevice.current.model)
+        let screen = UIScreen.main
+        let size = screen.bounds.size
+        let scale = screen.scale
+        
+        let width = Int((size.width * scale) * 0.5)
+        let height = Int((size.height * scale) * 0.5)
+        let screenResolution = "\(height),\(width)"
         session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: .none)
-        serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)
+        serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: ["screenResolution": "\(screenResolution)"], serviceType: serviceType)
         serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
 
         super.init()
@@ -180,8 +186,10 @@ extension ConnectionManager: MCNearbyServiceBrowserDelegate {
             if let availablePeer = self.availablePeer {
                 self.availablePeer = availablePeer
             } else {
-                self.availablePeer = peerID
-                self.connectedPeerName = peerID.displayName
+                if !peerID.displayName.contains("iPad") && !peerID.displayName.contains("iPhone") {
+                    self.availablePeer = peerID
+                    self.connectedPeerName = peerID.displayName
+                }
             }
         }
     }
@@ -218,11 +226,10 @@ extension ConnectionManager: MCSessionDelegate {
 
 import Network
 
-@MainActor
+//@MainActor
 class LiveStreamClient: ObservableObject {
     var initialTouchLocation: CGPoint?
     @Published var image: UIImage?
-
     private var connection: NWConnection?
     private var buffer = Data()
 
@@ -231,10 +238,10 @@ class LiveStreamClient: ObservableObject {
         let nwPort = NWEndpoint.Port(rawValue: port)!
 
         connection = NWConnection(host: nwEndpoint, port: nwPort, using: .tcp)
-        connection?.stateUpdateHandler = { newState in
+        connection?.stateUpdateHandler = { [weak self] newState in
+            guard let self else { return }
             print("Connection state: \(newState)")
         }
-
         connection?.start(queue: .global())
         receiveLoop()
     }
@@ -272,5 +279,57 @@ class LiveStreamClient: ObservableObject {
     func disconnect() {
         connection?.cancel()
         connection = nil
+    }
+}
+
+enum MoveUpdateType {
+    case click
+    case drag
+    case doubleClick
+    case selectAndDragStart
+    case selectAndDragUpdate
+    case selectAndDragEnd
+    case scroll
+}
+
+extension LiveStreamClient {
+    func sendMouseClick(moveUpdateType: MoveUpdateType, dx: CGFloat, dy: CGFloat) {
+        switch moveUpdateType {
+        case .click:
+            let command = ["type": "click", "dx": dx, "dy": dy] as [String : Any]
+            sendControlPacket(command)
+        case .doubleClick:
+            let command = ["type": "doubleClick", "dx": dx, "dy": dy] as [String : Any]
+            sendControlPacket(command)
+        case .drag:
+            let command = ["type": "drag", "dx": dx, "dy": dy] as [String : Any]
+            sendControlPacket(command)
+            
+        case .selectAndDragStart:
+            let command = ["type": "selectAndDragStart", "dx": dx, "dy": dy] as [String : Any]
+            sendControlPacket(command)
+            
+        case .selectAndDragUpdate:
+            let command = ["type": "selectAndDragUpdate", "dx": dx, "dy": dy] as [String : Any]
+            sendControlPacket(command)
+            
+        case .selectAndDragEnd:
+            let command = ["type": "selectAndDragEnd", "dx": dx, "dy": dy] as [String : Any]
+            sendControlPacket(command)
+            
+        case .scroll:
+            let command = ["type": "scroll", "dx": dx, "dy": dy] as [String : Any]
+            sendControlPacket(command)
+        }
+    }
+
+    func sendControlPacket(_ dict: [String: Any]) {
+        guard let connection = connection else {
+            return
+        }
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: dict) else { return }
+        var length = UInt32(jsonData.count).bigEndian
+        let packet = Data(bytes: &length, count: 4) + jsonData
+        connection.send(content: packet, completion: .contentProcessed({ _ in }))
     }
 }
