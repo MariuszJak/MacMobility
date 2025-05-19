@@ -34,13 +34,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        if connectionManager.pairingStatus == .notPaired, let availablePeer = connectionManager.availablePeer {
+        if connectionManager.pairingStatus == .notPaired, let availablePeer = connectionManager.availablePeerWithName?.0 {
             let shouldConnect = KeychainManager().retrieve(key: .autoconnect) ?? Keys.autoconnect.defaultValue
             let connectionRequest = try? JSONEncoder().encode(ConnectionRequest(shouldConnect: shouldConnect))
             connectionManager.invitePeer(with: availablePeer, context: connectionRequest)
             if !shouldConnect {
                 connectionManager.appState = .foreground
-                connectionManager.availablePeer = connectionManager.availablePeer
+                connectionManager.availablePeerWithName = connectionManager.availablePeerWithName
             }
         }
         connectionManager.appState = .foreground

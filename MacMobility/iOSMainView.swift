@@ -120,11 +120,11 @@ struct iOSMainView: View {
                 SettingsView(isPresented: $showsAppSettings)
             }
             .fullScreenCover(isPresented: $showsConnectionView) {
-                if let availablePeer = connectionManager.availablePeer {
+                if let availablePeerWithName = connectionManager.availablePeerWithName, let availablePeer = availablePeerWithName.0 {
                     PairingView(
                         connectionManager: connectionManager,
                         isPresented: $showsConnectionView,
-                        deviceName: availablePeer.displayName) {
+                        deviceName: availablePeerWithName.1) {
                             let context = try? JSONEncoder().encode(ConnectionRequest(shouldConnect: true))
                             connectionManager.isInitialLoading = true
                             connectionManager.invitePeer(with: availablePeer, context: context)
@@ -148,7 +148,7 @@ struct iOSMainView: View {
                 }
             }
         }
-        .onReceive(connectionManager.$availablePeer) { availablePeer in
+        .onReceive(connectionManager.$availablePeerWithName) { availablePeer in
             if availablePeer != nil {
                 if didSeenDependencyScreens &&
                     connectionManager.appState == .foreground {
@@ -160,7 +160,7 @@ struct iOSMainView: View {
                 }
             }
         }
-        .alert("Received invitation from \(connectionManager.receivedInviteFrom?.displayName ?? "")",
+        .alert("Received invitation from \(connectionManager.receivedInviteWithNameFrom?.1 ?? "")",
                isPresented: $connectionManager.receivedInvite) {
             alertView
         }
@@ -405,7 +405,7 @@ struct iOSMainView: View {
     private var qrCodeScannerView: some View {
         QRCodeScanner() { code in
             showQRScaner = false
-            if let availablePeer = connectionManager.availablePeer {
+            if let availablePeer = connectionManager.availablePeerWithName?.0 {
                 let data = code.data(using: .utf8)
                 connectionManager.invitePeer(with: availablePeer, context: data)
             }
