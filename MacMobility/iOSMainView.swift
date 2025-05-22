@@ -265,6 +265,9 @@ struct iOSMainView: View {
                                             .aspectRatio(contentMode: .fill)
                                             .cornerRadius(20.0)
                                             .frame(width: itemsSize, height: itemsSize)
+                                            .clipShape(
+                                                RoundedRectangle(cornerRadius: 20.0)
+                                            )
                                     }
                                     if test.showTitleOnIcon ?? true {
                                         Text(test.title)
@@ -293,6 +296,9 @@ struct iOSMainView: View {
                                     .aspectRatio(contentMode: .fill)
                                     .cornerRadius(20.0)
                                     .frame(width: itemsSize, height: itemsSize)
+                                    .clipShape(
+                                        RoundedRectangle(cornerRadius: 20.0)
+                                    )
                             }
                             .hoverEffect(.highlight)
                         } else {
@@ -312,6 +318,9 @@ struct iOSMainView: View {
                                         .aspectRatio(contentMode: .fill)
                                         .cornerRadius(20.0)
                                         .frame(width: itemsSize, height: itemsSize)
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 20.0)
+                                        )
                                     if test.showTitleOnIcon ?? true {
                                         Text(test.title)
                                             .font(.system(size: regularFontSize))
@@ -337,6 +346,9 @@ struct iOSMainView: View {
                                         .aspectRatio(contentMode: .fill)
                                         .cornerRadius(20.0)
                                         .frame(width: itemsSize, height: itemsSize)
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 20.0)
+                                        )
                                     if test.showTitleOnIcon ?? true {
                                         Text(test.title)
                                             .font(.system(size: regularFontSize))
@@ -360,6 +372,9 @@ struct iOSMainView: View {
                                         .aspectRatio(contentMode: .fill)
                                         .cornerRadius(20.0)
                                         .frame(width: itemsSize, height: itemsSize)
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 20.0)
+                                        )
                                     if test.showTitleOnIcon ?? true {
                                         Text(test.title)
                                             .font(.system(size: regularFontSize))
@@ -438,6 +453,7 @@ struct iOSMainView: View {
                                 currentPage = page
                             }
                             .animation(.easeInOut, value: currentPage)
+                            .hoverEffect(.highlight)
                         }
                     }
                 }
@@ -454,6 +470,7 @@ struct iOSMainView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     .padding(.trailing, 8.0)
+                    .hoverEffect(.highlight)
                     if connectionManager.pairingStatus == .paired {
                         Button {
                             showsDisconnectAlert = true
@@ -463,6 +480,7 @@ struct iOSMainView: View {
                                 .foregroundColor(.primary)
                         }
                         .buttonStyle(PlainButtonStyle())
+                        .hoverEffect(.highlight)
                     }
                 }
             }
@@ -513,260 +531,6 @@ struct iOSMainView: View {
                 }
             }
             .frame(height: UIScreen.main.bounds.height - 106.0)
-        }
-    }
-}
-
-
-import Foundation
-import SystemConfiguration
-
-struct StreamView: View {
-    @StateObject private var client = LiveStreamClient()
-    @GestureState private var dragOffset = CGSize.zero
-    @State private var dragLocation: CGPoint = .zero
-    @State private var tapLocation: CGPoint = .zero
-    @State private var isDragging = false
-    @State private var tapPerformed = false
-    @State private var scrollOffset: CGFloat = 0
-    @State private var doubleTapThreshold: TimeInterval = 0.3
-    @State private var lastTapTime: Date? = nil
-    @State private var seenTutorial: Bool = false
-    
-    private let serverIP: String
-    
-    init(serverIP: String) {
-        self.serverIP = serverIP
-    }
-
-    var body: some View {
-        VStack {
-            if let image = client.image {
-                GeometryReader { geometry in
-                    ZStack {
-                        imageView(image, geometry: geometry)
-                        if !seenTutorial {
-                            Rectangle()
-                                .fill(Color.black.opacity(0.9))
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            TouchControlTutorialView {
-                                seenTutorial = true
-                            }
-                            .background(
-                                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                    .fill(Color(red: 28/255, green: 28/255, blue: 30/255))
-                                    .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 2)
-                            )
-                            .padding()
-                        }
-                    }
-                }
-            }
-        }
-        .statusBarHidden(true)
-        .onAppear {
-            seenTutorial = KeychainManager().retrieve(key: .seenTouchTutorial) ?? Keys.seenTouchTutorial.defaultValue
-            client.connect(to: serverIP)
-        }
-        .onDisappear {
-            client.disconnect()
-        }
-        .ignoresSafeArea()
-    }
-    
-    func imageView(_ image: UIImage, geometry: GeometryProxy) -> some View {
-        Image(uiImage: image)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .background(Color.black)
-            .frame(width: geometry.size.width, height: geometry.size.height)
-            .gesture(
-                DragGesture(minimumDistance: 10)
-                    .onChanged { value in
-                        let delta = value.translation
-                        self.client.sendMouseClick(
-                            moveUpdateType: .scroll,
-                            dx: delta.width,
-                            dy: delta.height
-                        )
-                    }
-            )
-            .simultaneousGesture(
-                LongPressGesture(minimumDuration: 0.3)
-                    .sequenced(before: DragGesture(minimumDistance: 0))
-                    .onChanged { value in
-                        switch value {
-                        case .second(true, .some(let drag)):
-                            if !isDragging {
-                                isDragging = true
-                                dragLocation = translatedPoint(originalSize: geometry.size, targetSize: image.size, from: drag.startLocation)
-                                self.client.sendMouseClick(
-                                    moveUpdateType: .selectAndDragStart,
-                                    dx: dragLocation.x,
-                                    dy: dragLocation.y
-                                )
-                            } else {
-                                let translation = translatedPoint(originalSize: geometry.size, targetSize: image.size, from: drag.location)
-                                self.client.sendMouseClick(
-                                    moveUpdateType: .selectAndDragUpdate,
-                                    dx: translation.x,
-                                    dy: translation.y
-                                )
-                            }
-                        default: break
-                        }
-                    }
-                    .onEnded { value in
-                        if case .second(true, .some(let drag)) = value {
-                            let translation = translatedPoint(originalSize: geometry.size, targetSize: image.size, from: drag.location)
-                            self.client.sendMouseClick(
-                                moveUpdateType: .selectAndDragEnd,
-                                dx: translation.x,
-                                dy: translation.y
-                            )
-                        }
-                        isDragging = false
-                    }
-            )
-            .simultaneousGesture(
-                TapGesture(count: 1)
-                    .onEnded {
-                        if !isDragging {
-                            tapPerformed = true
-                            let translated = translatedPoint(originalSize: geometry.size, targetSize: image.size, from: tapLocation)
-                            self.client.sendMouseClick(
-                                moveUpdateType: .click,
-                                dx: translated.x,
-                                dy: translated.y
-                            )
-                        }
-                    }
-            )
-            .simultaneousGesture(
-                TapGesture(count: 2)
-                    .onEnded {
-                        let translated = translatedPoint(originalSize: geometry.size, targetSize: image.size, from: tapLocation)
-                        self.client.sendMouseClick(
-                            moveUpdateType: .doubleClick,
-                            dx: translated.x,
-                            dy: translated.y
-                        )
-                    }
-            )
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0)
-                    .onEnded { value in
-                        tapLocation = value.location
-                    }
-            )
-    }
-
-    func translatedPoint(originalSize: CGSize, targetSize: CGSize, from tapLocation: CGPoint) -> CGPoint {
-        let scaleX = targetSize.width / originalSize.width
-        let scaleY = targetSize.height / originalSize.height
-        return CGPoint(x: tapLocation.x * scaleX, y: tapLocation.y * scaleY)
-    }
-}
-
-struct TouchControlTutorialView: View {
-    @Environment(\.colorScheme) var colorScheme
-    @State private var currentPage = 0
-    var closeAction: () -> Void
-
-    let pages: [TutorialPage] = [
-        TutorialPage(
-            title: "Welcome to Touch Display",
-            description: "This is a virtual macOS display, accessible on your MobiliyControl app. You can control display using a mouse or touch gestures.",
-            icon: "rectangle.and.hand.point.up.left.fill"
-        ),
-        TutorialPage(
-            title: "Single Tap",
-            description: "Tap anywhere on the screen to perform a single click. This works just like a left-click with your mouse.",
-            icon: "hand.tap"
-        ),
-        TutorialPage(
-            title: "Double Tap",
-            description: "Double tap quickly on a screen area to perform a double click. Use it to open files, folders, or apps.",
-            icon: "hand.tap.fill"
-        ),
-        TutorialPage(
-            title: "Long Press & Drag",
-            description: "Touch and hold for about a second to begin dragging the selected item. Perfect for moving windows or icons.",
-            icon: "hand.point.up.left.fill"
-        ),
-        TutorialPage(
-            title: "Scroll with Drag",
-            description: "To scroll, touch the screen once and drag with your finger. Smoothly navigate content in windows or apps.",
-            icon: "hand.draw.fill"
-        )
-    ]
-
-    var body: some View {
-        VStack {
-            TabView(selection: $currentPage) {
-                ForEach(0..<pages.count, id: \.self) { index in
-                    TutorialPageView(page: pages[index])
-                        .tag(index)
-                        .padding()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-            }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-            .animation(.easeInOut, value: currentPage)
-
-            Button(action: {
-                if currentPage < pages.count - 1 {
-                    currentPage += 1
-                } else {
-                    KeychainManager().save(key: .seenTouchTutorial, value: true)
-                    closeAction()
-                }
-            }) {
-                Text(currentPage == pages.count - 1 ? "Done" : "Next")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.accentColor)
-                    .cornerRadius(12)
-                    .padding(.horizontal)
-            }
-            .padding(.bottom, 20)
-        }
-        .frame(width: 500, height: 370)
-    }
-}
-
-
-struct TutorialPage {
-    let title: String
-    let description: String
-    let icon: String
-}
-
-struct TutorialPageView: View {
-    let page: TutorialPage
-
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: page.icon)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
-                .foregroundColor(.accentColor)
-                .padding(.top, 10)
-
-            Text(page.title)
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
-
-            Text(page.description)
-                .font(.title2)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-
-            Spacer()
         }
     }
 }

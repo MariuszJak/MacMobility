@@ -26,6 +26,7 @@ struct PairingView: View {
                         .foregroundColor(.primary)
                         .padding()
                 }
+                .hoverEffect(.highlight)
             }
             VStack(spacing: 24) {
                 Spacer()
@@ -51,6 +52,7 @@ struct PairingView: View {
                             .background(Color.blue)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
+                    .hoverEffect(.highlight)
                     
                     Button(action: {
                         onReject()
@@ -63,6 +65,7 @@ struct PairingView: View {
                             .background(.thinMaterial)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
+                    .hoverEffect(.highlight)
                 }
                 .padding(.horizontal)
                 .padding(.bottom, 78.0)

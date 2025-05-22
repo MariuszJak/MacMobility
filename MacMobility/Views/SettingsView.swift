@@ -36,6 +36,7 @@ struct SettingsView: View {
                         .font(.system(size: 28))
                         .foregroundColor(.primary)
                 }
+                .hoverEffect(.highlight)
             }
             .padding()
             VStack(spacing: 16) {
