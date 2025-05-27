@@ -76,14 +76,14 @@ struct StreamView: View {
                                     case .second(true, .some(let drag)):
                                         if !isDragging {
                                             isDragging = true
-                                            dragLocation = translatedPoint(originalSize: geometry.size, targetSize: geometry.size, from: drag.startLocation)
+                                            dragLocation = translatedPoint(originalSize: geometry.size, targetSize: .screenSize, from: drag.startLocation)
                                             self.client.sendMouseClick(
                                                 moveUpdateType: .selectAndDragStart,
                                                 dx: dragLocation.x,
                                                 dy: dragLocation.y
                                             )
                                         } else {
-                                            let translation = translatedPoint(originalSize: geometry.size, targetSize: geometry.size, from: drag.location)
+                                            let translation = translatedPoint(originalSize: geometry.size, targetSize: .screenSize, from: drag.location)
                                             self.client.sendMouseClick(
                                                 moveUpdateType: .selectAndDragUpdate,
                                                 dx: translation.x,
@@ -95,7 +95,7 @@ struct StreamView: View {
                                 }
                                 .onEnded { value in
                                     if case .second(true, .some(let drag)) = value {
-                                        let translation = translatedPoint(originalSize: geometry.size, targetSize: geometry.size, from: drag.location)
+                                        let translation = translatedPoint(originalSize: geometry.size, targetSize: .screenSize, from: drag.location)
                                         self.client.sendMouseClick(
                                             moveUpdateType: .selectAndDragEnd,
                                             dx: translation.x,
@@ -110,8 +110,7 @@ struct StreamView: View {
                                 .onEnded {
                                     if !isDragging {
                                         tapPerformed = true
-                                        let translated = translatedPoint(originalSize: geometry.size, targetSize: geometry.size, from: tapLocation)
-                                        print(geometry.size, client.videoLayer.bounds, tapLocation)
+                                        let translated = translatedPoint(originalSize: geometry.size, targetSize: .screenSize, from: tapLocation)
                                         self.client.sendMouseClick(
                                             moveUpdateType: .click,
                                             dx: translated.x,
@@ -123,7 +122,7 @@ struct StreamView: View {
                         .simultaneousGesture(
                             TapGesture(count: 2)
                                 .onEnded {
-                                    let translated = translatedPoint(originalSize: geometry.size, targetSize: geometry.size, from: tapLocation)
+                                    let translated = translatedPoint(originalSize: geometry.size, targetSize: .screenSize, from: tapLocation)
                                     self.client.sendMouseClick(
                                         moveUpdateType: .doubleClick,
                                         dx: translated.x,
@@ -170,5 +169,17 @@ struct StreamView: View {
         let scaleX = targetSize.width / originalSize.width
         let scaleY = targetSize.height / originalSize.height
         return CGPoint(x: tapLocation.x * scaleX, y: tapLocation.y * scaleY)
+    }
+}
+
+extension CGSize {
+    static var screenSize: CGSize {
+        let screen = UIScreen.main
+        let size = screen.bounds.size
+        let scale = screen.scale
+        
+        let width = Int((size.width * scale) * 0.5)
+        let height = Int((size.height * scale) * 0.5)
+        return .init(width: width, height: height)
     }
 }
