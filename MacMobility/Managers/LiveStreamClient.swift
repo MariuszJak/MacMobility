@@ -10,20 +10,24 @@ import Network
 import VideoToolbox
 import CoreImage
 import UIKit
+import AVFoundation
 
 class LiveStreamClient: ObservableObject {
     private var listener: NWListener!
     private var connection: NWConnection?
     private var formatDesc: CMFormatDescription?
     private var decompressionSession: VTDecompressionSession?
+    private let decodeQueue = DispatchQueue(label: "LiveStreamClient.decodeQueue")
+    private let decodeSemaphore = DispatchSemaphore(value: 8)
+    private let ciContext = CIContext()
+    let videoLayer = AVSampleBufferDisplayLayer()
+    var frameCount: Int64 = 0
+    let frameRate: Int32 = 60
 
     private var sps: Data?
     private var pps: Data?
 
     private var receiveBuffer = Data()
-    var initialTouchLocation: CGPoint?
-    @Published var image: UIImage?
-    private var buffer = Data()
 
     func connect(to host: String, port: UInt16 = 8888) {
         let nwEndpoint = NWEndpoint.Host(host)
@@ -37,10 +41,15 @@ class LiveStreamClient: ObservableObject {
         connection?.start(queue: .global())
         startReceiveLoop()
     }
-    
+
     func disconnect() {
+        formatDesc = nil
+        listener?.cancel()
         connection?.cancel()
         connection = nil
+        listener = nil
+        frameCount = 0
+        decompressionSession = nil
     }
 
     private func startReceiveLoop() {
@@ -66,7 +75,11 @@ class LiveStreamClient: ObservableObject {
             }
 
             let nalUnit = receiveBuffer[startRange.upperBound..<nextRange.lowerBound]
-            decode(nalUnit: nalUnit)
+            decodeQueue.async { [nalUnit, weak self] in
+                self?.decodeSemaphore.wait()
+                defer { self?.decodeSemaphore.signal() }
+                self?.decode(nalUnit: nalUnit)
+            }
 
             receiveBuffer.removeSubrange(..<nextRange.lowerBound)
         }
@@ -126,7 +139,11 @@ class LiveStreamClient: ObservableObject {
         }
 
         var sampleBuffer: CMSampleBuffer?
-        var timing = CMSampleTimingInfo(duration: .invalid, presentationTimeStamp: .zero, decodeTimeStamp: .invalid)
+        var timing = CMSampleTimingInfo(
+            duration: CMTime(value: 1, timescale: frameRate),
+                presentationTimeStamp: CMTime(value: frameCount, timescale: frameRate),
+                decodeTimeStamp: .invalid
+            )
 
         CMSampleBufferCreateReady(
             allocator: kCFAllocatorDefault,
@@ -144,12 +161,11 @@ class LiveStreamClient: ObservableObject {
             createDecompressionSession()
         }
 
-        if let sampleBuffer = sampleBuffer, let session = decompressionSession {
-            var flagsOut = VTDecodeInfoFlags()
-            VTDecompressionSessionDecodeFrame(session, sampleBuffer: sampleBuffer, flags: [], infoFlagsOut: &flagsOut, outputHandler: { [weak self] status, flags, imageBuffer, _, _ in
-                guard status == noErr, let pixelBuffer = imageBuffer else { return }
-                self?.displayDecodedFrame(pixelBuffer: pixelBuffer)
-            })
+        if let sampleBuffer = sampleBuffer {
+            frameCount += 1
+            DispatchQueue.main.async {
+                self.videoLayer.enqueue(sampleBuffer)
+            }
         }
     }
 
@@ -202,18 +218,6 @@ class LiveStreamClient: ObservableObject {
 
         if status != noErr {
             print("Failed to create decompression session: \(status)")
-        }
-    }
-
-    private func displayDecodedFrame(pixelBuffer: CVPixelBuffer) {
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        let context = CIContext()
-        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
-            return
-        }
-        let uiImage = UIImage(cgImage: cgImage)
-        DispatchQueue.main.async {
-            self.image = uiImage
         }
     }
 }
