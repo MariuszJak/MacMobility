@@ -9,6 +9,13 @@ import SwiftUI
 import Swiftly
 import MultipeerConnectivity
 
+extension View {
+    func log(_ log: String) -> some View {
+        print(log)
+        return self
+    }
+}
+
 struct Preferences {
     enum Key {
         static let didSeenDependencyScreens = "didSeenDependencyScreens"
@@ -83,7 +90,7 @@ struct iOSMainView: View {
         }
     }
     var itemsSpacing: CGFloat {
-        isIPad ? 21 : 8
+        isIPad ? 21 : 18
     }
     
     init(connectionManager: ConnectionManager) {
@@ -195,26 +202,11 @@ struct iOSMainView: View {
     @ViewBuilder
     private var shortcutItemsGridView: some View {
         if isIPad {
-            VStack {
+            VStack(alignment: .leading) {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
             }
             .padding(.vertical, 16)
             .frame(width: orientationObserver.orientation.isLandscape ? 1100.0 : (isIPadPro13Inch() ? 900.0 : 700.0))
-            .gesture(
-                DragGesture()
-                    .onEnded { value in
-                        let horizontalAmount = value.translation.width
-                        if horizontalAmount < -50 {
-                            if currentPage < findLargestPage(in: connectionManager.shortcutsList.flatMap(\.shortcuts))  {
-                                currentPage += 1
-                            }
-                        } else if horizontalAmount > 50 {
-                            if currentPage > 1 {
-                                currentPage -= 1
-                            }
-                        }
-                    }
-            )
         } else {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
@@ -247,152 +239,194 @@ struct iOSMainView: View {
         return shortcuts.max(by: { $0.page < $1.page })?.page ?? 1
     }
     
+    var testSize: CGFloat {
+        itemsSpacing
+    }
+    
     func grid(shortcuts: [ShortcutObject]) -> some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: itemsSize))], spacing: itemsSpacing) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: itemsSize), alignment: .leading)], spacing: itemsSpacing) {
             ForEach(0..<21) { index in
-                if let test = shortcuts.first(where: { $0.index == index }) {
-                    switch test.type {
-                    case .shortcut:
-                        AnimatedButton {
-                            connectionManager.send(shortcut: test)
-                        } label: {
-                            VStack {
-                                ZStack {
-                                    if let data = test.imageData,
-                                       let image = UIImage(data: data) {
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .cornerRadius(20.0)
-                                            .frame(width: itemsSize, height: itemsSize)
-                                            .clipShape(
-                                                RoundedRectangle(cornerRadius: 20.0)
-                                            )
-                                    }
-                                    if test.showTitleOnIcon ?? true {
-                                        Text(test.title)
-                                            .font(.system(size: regularFontSize))
-                                            .multilineTextAlignment(.center)
-                                            .padding(.all, 3)
-                                            .lineLimit(3)
-                                            .outlinedText()
-                                            .foregroundStyle(Color.white)
-                                    }
-                                }
+                VStack {
+                    ZStack {
+                        itemView(shortcuts: shortcuts, index: index)
+                            .frame(
+                                width: (itemsSize) * ((item(for: index, from: shortcuts)?.size?.width ?? 1.0)) + testSize * ((item(for: index, from: shortcuts)?.size?.width ?? 1.0) - 1),
+                                height: (itemsSize) * ((item(for: index, from: shortcuts)?.size?.height ?? 1.0)) + testSize * ((item(for: index, from: shortcuts)?.size?.height ?? 1.0) - 1),
+                            )
+                            .if((item(for: index, from: shortcuts)?.size?.width ?? 0) > 1) {
+                                $0.padding(.leading, ((itemsSize) * ((item(for: index, from: shortcuts)?.size?.width ?? 1.0)) + testSize * ((item(for: index, from: shortcuts)?.size?.width ?? 1.0) - 1)) * percentageForPadding(of: (item(for: index, from: shortcuts)?.size?.width)))
                             }
-                            .cornerRadius(20.0)
-                            .frame(width: itemsSize, height: itemsSize)
-                        }
-                        .hoverEffect(.highlight)
-                   case .app:
-                        if let data = test.imageData,
-                           let image = UIImage(data: data) {
-                            AnimatedButton {
-                                connectionManager.send(shortcut: test)
-                            } label: {
+                            .if((item(for: index, from: shortcuts)?.size?.height ?? 0) > 1) {
+                                $0.padding(.top, ((itemsSize) * ((item(for: index, from: shortcuts)?.size?.height ?? 1.0)) + testSize * ((item(for: index, from: shortcuts)?.size?.height ?? 1.0) - 1)) * percentageForPadding(of: (item(for: index, from: shortcuts)?.size?.height)))
+                            }
+                    }
+                }
+                .frame(width: itemsSize, height: itemsSize)
+                .if((shortcuts.first(where: { $0.indexes?.contains(index) ?? false }) == nil)) {
+                    $0
+                        .background(
+                            PlusButtonView(itemSize: .init(width: itemsSize, height: itemsSize))
+                        )
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    func percentageForPadding(of value: CGFloat?) -> CGFloat {
+        guard let value else { return 1.0 }
+        if value == 2 {
+            return 0.52
+        } else if value == 3 {
+            return 0.7
+        } else {
+            return 1.0
+        }
+    }
+    
+    @ViewBuilder
+    func itemView(shortcuts: [ShortcutObject], index: Int) -> some View {
+        if let shortcut = shortcuts.first(where: { $0.indexes?.first == index }) {
+            switch shortcut.type {
+            case .shortcut:
+                AnimatedButton {
+                    connectionManager.send(shortcut: shortcut)
+                } label: {
+                    VStack {
+                        ZStack {
+                            if let data = shortcut.imageData,
+                               let image = UIImage(data: data) {
                                 Image(uiImage: image)
                                     .resizable()
-                                    .scaleEffect(1.2)
                                     .aspectRatio(contentMode: .fill)
                                     .cornerRadius(20.0)
-                                    .frame(width: itemsSize, height: itemsSize)
+//                                    .frame(width: itemsSize, height: itemsSize)
                                     .clipShape(
                                         RoundedRectangle(cornerRadius: 20.0)
                                     )
                             }
-                            .hoverEffect(.highlight)
-                        } else {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.red)
-                                .frame(width: itemsSize, height: itemsSize)
-                        }
-                    case .utility:
-                        if let data = test.imageData,
-                           let image = UIImage(data: data) {
-                            AnimatedButton {
-                                connectionManager.send(shortcut: test)
-                            } label: {
-                                ZStack {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .cornerRadius(20.0)
-                                        .frame(width: itemsSize, height: itemsSize)
-                                        .clipShape(
-                                            RoundedRectangle(cornerRadius: 20.0)
-                                        )
-                                    if test.showTitleOnIcon ?? true {
-                                        Text(test.title)
-                                            .font(.system(size: regularFontSize))
-                                            .multilineTextAlignment(.center)
-                                            .padding(.all, 3)
-                                            .lineLimit(3)
-                                            .outlinedText()
-                                            .foregroundStyle(Color.white)
-                                    }
-                                }
+                            if shortcut.showTitleOnIcon ?? true {
+                                Text(shortcut.title)
+                                    .font(.system(size: regularFontSize))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.all, 3)
+                                    .lineLimit(3)
+                                    .outlinedText()
+                                    .foregroundStyle(Color.white)
                             }
-                            .hoverEffect(.highlight)
-                        }
-                    case .webpage:
-                        if let data = test.imageData,
-                           let image = UIImage(data: data) {
-                            AnimatedButton {
-                                connectionManager.send(shortcut: test)
-                            } label: {
-                                ZStack {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .cornerRadius(20.0)
-                                        .frame(width: itemsSize, height: itemsSize)
-                                        .clipShape(
-                                            RoundedRectangle(cornerRadius: 20.0)
-                                        )
-                                    if test.showTitleOnIcon ?? true {
-                                        Text(test.title)
-                                            .font(.system(size: regularFontSize))
-                                            .multilineTextAlignment(.center)
-                                            .padding(.all, 3)
-                                            .lineLimit(3)
-                                            .outlinedText()
-                                            .foregroundStyle(Color.white)
-                                    }
-                                }
-                            }
-                            .hoverEffect(.highlight)
-                        } else if let data = test.browser?.icon {
-                            AnimatedButton {
-                                connectionManager.send(shortcut: test)
-                            } label: {
-                                ZStack {
-                                    Image(data)
-                                        .resizable()
-                                        .scaleEffect(1.1)
-                                        .aspectRatio(contentMode: .fill)
-                                        .cornerRadius(20.0)
-                                        .frame(width: itemsSize, height: itemsSize)
-                                        .clipShape(
-                                            RoundedRectangle(cornerRadius: 20.0)
-                                        )
-                                    if test.showTitleOnIcon ?? true {
-                                        Text(test.title)
-                                            .font(.system(size: regularFontSize))
-                                            .multilineTextAlignment(.center)
-                                            .lineLimit(3)
-                                            .outlinedText()
-                                            .foregroundStyle(Color.white)
-                                    }
-                                }
-                            }
-                            .hoverEffect(.highlight)
                         }
                     }
-                } else {
-                    PlusButtonView(itemSize: .init(width: itemsSize, height: itemsSize))
+                    .cornerRadius(20.0)
+//                    .frame(width: itemsSize, height: itemsSize)
                 }
+                .hoverEffect(.highlight)
+           case .app:
+                if let data = shortcut.imageData,
+                   let image = UIImage(data: data) {
+                    AnimatedButton {
+                        connectionManager.send(shortcut: shortcut)
+                    } label: {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaleEffect(1.2)
+                            .aspectRatio(contentMode: .fill)
+                            .cornerRadius(20.0)
+//                            .frame(width: itemsSize, height: itemsSize)
+                            .clipShape(
+                                RoundedRectangle(cornerRadius: 20.0)
+                            )
+                    }
+                    .hoverEffect(.highlight)
+                } else {
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.red)
+//                        .frame(width: itemsSize, height: itemsSize)
+                }
+            case .utility:
+                if let data = shortcut.imageData,
+                   let image = UIImage(data: data) {
+                    AnimatedButton {
+                        connectionManager.send(shortcut: shortcut)
+                    } label: {
+                        ZStack {
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .cornerRadius(20.0)
+//                                .frame(width: itemsSize, height: itemsSize)
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 20.0)
+                                )
+                            if shortcut.showTitleOnIcon ?? true {
+                                Text(shortcut.title)
+                                    .font(.system(size: regularFontSize))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.all, 3)
+                                    .lineLimit(3)
+                                    .outlinedText()
+                                    .foregroundStyle(Color.white)
+                            }
+                        }
+                    }
+                    .hoverEffect(.highlight)
+                }
+            case .webpage:
+                if let data = shortcut.imageData,
+                   let image = UIImage(data: data) {
+                    AnimatedButton {
+                        connectionManager.send(shortcut: shortcut)
+                    } label: {
+                        ZStack {
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .cornerRadius(20.0)
+                                .frame(width: itemsSize, height: itemsSize)
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 20.0)
+                                )
+                            if shortcut.showTitleOnIcon ?? true {
+                                Text(shortcut.title)
+                                    .font(.system(size: regularFontSize))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.all, 3)
+                                    .lineLimit(3)
+                                    .outlinedText()
+                                    .foregroundStyle(Color.white)
+                            }
+                        }
+                    }
+                    .hoverEffect(.highlight)
+                } else if let data = shortcut.browser?.icon {
+                    AnimatedButton {
+                        connectionManager.send(shortcut: shortcut)
+                    } label: {
+                        ZStack {
+                            Image(data)
+                                .resizable()
+                                .scaleEffect(1.1)
+                                .aspectRatio(contentMode: .fill)
+                                .cornerRadius(20.0)
+//                                .frame(width: itemsSize, height: itemsSize)
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 20.0)
+                                )
+                            if shortcut.showTitleOnIcon ?? true {
+                                Text(shortcut.title)
+                                    .font(.system(size: regularFontSize))
+                                    .multilineTextAlignment(.center)
+                                    .lineLimit(3)
+                                    .outlinedText()
+                                    .foregroundStyle(Color.white)
+                            }
+                        }
+                    }
+                    .hoverEffect(.highlight)
+                }
+            case .control:
+                RoundedRectangle(cornerRadius: 20.0)
+                    .fill(.blue)
             }
-            .padding(.horizontal)
         }
     }
     
@@ -414,6 +448,10 @@ struct iOSMainView: View {
         case .pairining:
             break
         }
+    }
+    
+    func item(for index: Int, from shortcuts: [ShortcutObject]) -> ShortcutObject? {
+        shortcuts.first(where: { $0.indexes?.first == index })
     }
     
     @ViewBuilder
@@ -485,7 +523,7 @@ struct iOSMainView: View {
                 }
             }
         }
-        .padding(.bottom, 28)
+        .padding(.bottom, 8)
         .alert("Are you sure you want to disconnect?",
                isPresented: $showsDisconnectAlert) {
             HStack {
