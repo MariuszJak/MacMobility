@@ -106,7 +106,7 @@ class ConnectionManager: NSObject, ObservableObject {
                         value.forEach { sdiff in
                             self.shortcutsList.enumerated().forEach { (at, item) in
                                 item.shortcuts.enumerated().forEach { index, object in
-                                    if sdiff.item.id == object.id {
+                                    if sdiff.item.id == object.id && sdiff.item.page == object.page {
                                         self.shortcutsList[at].shortcuts.remove(at: index)
                                     }
                                 }

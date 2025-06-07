@@ -182,6 +182,7 @@ public enum ShortcutType: String, Codable {
     case app
     case webpage
     case utility
+    case html
 }
 
 public enum UtilityType: String, Codable {
@@ -189,6 +190,7 @@ public enum UtilityType: String, Codable {
     case multiselection
     case automation
     case macro
+    case html
 }
 
 enum ChangeType: String, Codable {
@@ -365,3 +367,19 @@ struct WebpageItem: Identifiable, Codable, Equatable {
     var browser: Browsers
 }
 
+import SwiftUI
+import WebKit
+
+struct HTMLCPUView: UIViewRepresentable {
+    var htmlContent: String
+
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView()
+        webView.loadHTMLString(htmlContent, baseURL: nil)
+        return webView
+    }
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        uiView.loadHTMLString(htmlContent, baseURL: nil)
+    }
+}

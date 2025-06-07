@@ -390,6 +390,14 @@ struct iOSMainView: View {
                             }
                             .hoverEffect(.highlight)
                         }
+                    case .html:
+                        if let scriptCode = test.scriptCode {
+                            HTMLCPUView(htmlContent: """
+                            \(scriptCode)
+                            """)
+                            .cornerRadius(20.0)
+                            .frame(width: itemsSize, height: itemsSize)
+                        }
                     }
                 } else {
                     PlusButtonView(itemSize: .init(width: itemsSize, height: itemsSize))
