@@ -160,6 +160,9 @@ struct iOSMainView: View {
                 }
             }
         }
+        .onChange(of: connectionManager.pageToFocus) { pageToFocus in
+            currentPage = pageToFocus?.page ?? 1
+        }
         .alert("Received invitation from \(connectionManager.receivedInviteWithNameFrom?.1 ?? "")",
                isPresented: $connectionManager.receivedInvite) {
             alertView

@@ -62,6 +62,8 @@ class ConnectionManager: NSObject, ObservableObject {
     @Published public var workspacesList: [WorkspacesListData] = []
     @Published public var shortcutsList: [ShortcutsListData] = []
     @Published public var shortcutsDiffList: [ShortcutsDiffListData] = []
+    @Published public var assignedPagesToApps: [AssignedAppsToPages] = []
+    @Published public var pageToFocus: AssignedAppsToPages?
     @Published public var alert: AlertMessage?
     @Published public var isInitialLoading: Bool = true
     public var rowCount = 4

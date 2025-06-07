@@ -150,6 +150,21 @@ struct AppSendableInfo: Identifiable, Codable {
     }
 }
 
+struct PagesResponse: Codable {
+    let title: String
+    let assignedAppsToPages: [AssignedAppsToPages]
+}
+
+struct AssignedAppsToPages: Codable, Equatable {
+    let page: Int
+    let appPath: String
+}
+
+struct FocusResponse: Codable {
+    let title: String
+    let pageToFocus: AssignedAppsToPages
+}
+
 struct WorkspaceSendableItem: Identifiable, Codable {
     var id: String
     let title: String
@@ -281,6 +296,16 @@ extension ConnectionManager {
                 guard shortcuts.shortcutTitle == "shortcutTitleDiff" else { return }
                 self.shortcutsDiffList = [ShortcutsDiffListData(shortcutsDiff: shortcuts.shortcutsDiff)]
                 self.isInitialLoading = false
+            }
+            
+            if let activeApps = try? JSONDecoder().decode(PagesResponse.self, from: data) {
+                guard activeApps.title == "AssignedApps" else { return }
+                self.assignedPagesToApps = activeApps.assignedAppsToPages
+            }
+            
+            if let focusTo = try? JSONDecoder().decode(FocusResponse.self, from: data) {
+                guard focusTo.title == "FocusResponse" else { return }
+                self.pageToFocus = focusTo.pageToFocus
             }
             
             if let stream = try? JSONDecoder().decode(StartStream.self, from: data) {
