@@ -183,16 +183,18 @@ extension ConnectionManager: MCNearbyServiceAdvertiserDelegate {
         if let context, let deviceName = try? JSONDecoder().decode(DeviceName.self, from: context) {
             DispatchQueue.main.async {
                 self.isInitialLoading = true
-                self.receivedInvite = true
+//                self.receivedInvite = true
                 self.receivedInviteWithNameFrom = (peerID, deviceName.name)
                 self.invitationHandler = invitationHandler
+                invitationHandler(true, self.session)
             }
         } else {
             DispatchQueue.main.async {
                 self.isInitialLoading = true
-                self.receivedInvite = true
+//                self.receivedInvite = true
                 self.receivedInviteWithNameFrom = (peerID, peerID.displayName)
                 self.invitationHandler = invitationHandler
+                invitationHandler(true, self.session)
             }
         }
     }
