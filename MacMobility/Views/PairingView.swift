@@ -77,5 +77,11 @@ struct PairingView: View {
             BackgroundBlurView()
                 .ignoresSafeArea()
         )
+        .onAppear {
+            let shouldReconnect = KeychainManager().retrieve(key: .reconnect) ?? Keys.reconnect.defaultValue
+            if shouldReconnect {
+                onConnect()
+            }
+        }
     }
 }

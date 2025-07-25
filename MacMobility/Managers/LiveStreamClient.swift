@@ -34,8 +34,7 @@ class LiveStreamClient: ObservableObject {
         let nwPort = NWEndpoint.Port(rawValue: port)!
 
         connection = NWConnection(host: nwEndpoint, port: nwPort, using: .tcp)
-        connection?.stateUpdateHandler = { [weak self] newState in
-            guard let self else { return }
+        connection?.stateUpdateHandler = { newState in
             print("Connection state: \(newState)")
         }
         connection?.start(queue: .global())

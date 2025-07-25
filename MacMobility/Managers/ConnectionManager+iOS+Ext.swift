@@ -11,6 +11,10 @@ import os
 import Foundation
 import Combine
 
+struct ServerReconnect: Codable {
+    let reconnect: Bool
+}
+
 struct CursorPosition: Codable {
     let width: CGFloat
     let height: CGFloat
@@ -74,6 +78,14 @@ extension ConnectionManager: ConnectionSenable {
     func send(shortcut: ShortcutObject) {
         guard !session.connectedPeers.isEmpty,
               let data = try? JSONEncoder().encode(shortcut) else {
+            return
+        }
+        send(data)
+    }
+    
+    func send(serverReconnect: ServerReconnect) {
+        guard !session.connectedPeers.isEmpty,
+              let data = try? JSONEncoder().encode(serverReconnect) else {
             return
         }
         send(data)
@@ -297,6 +309,9 @@ extension ConnectionManager {
             if let shortcuts = try? JSONDecoder().decode(ShortcutsResponseDiff.self, from: data) {
                 guard shortcuts.shortcutTitle == "shortcutTitleDiff" else { return }
                 self.shortcutsDiffList = [ShortcutsDiffListData(shortcutsDiff: shortcuts.shortcutsDiff)]
+                if self.isInitialLoading {
+                    self.connectToIPIfNeeded()
+                }
                 self.isInitialLoading = false
             }
             

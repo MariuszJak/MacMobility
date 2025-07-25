@@ -122,6 +122,14 @@ class ConnectionManager: NSObject, ObservableObject {
         stopBrowsing()
     }
     
+    func connectToIPIfNeeded() {
+        let autoconnect = KeychainManager().retrieve(key: .autoconnectToExternalDisplay) ?? Keys.autoconnectToExternalDisplay.defaultValue
+        guard ipAddress != nil && autoconnect else {
+            return
+        }
+        send(serverReconnect: .init(reconnect: true))
+    }
+    
     func startAdvertising() {
         serviceAdvertiser.startAdvertisingPeer()
     }
@@ -153,7 +161,6 @@ class ConnectionManager: NSObject, ObservableObject {
     func invitePeer(with peer: MCPeerID, context: Data? = nil) {
         serviceBrowser.invitePeer(peer, to: session, withContext: context, timeout: 30)
     }
-    
     
     func disconnect() {
         session.disconnect()
@@ -219,6 +226,8 @@ extension ConnectionManager: MCNearbyServiceBrowserDelegate {
 extension ConnectionManager: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         DispatchQueue.main.async {
+            let shouldConnect = KeychainManager().retrieve(key: .autoconnect) ?? Keys.autoconnect.defaultValue
+            KeychainManager().save(key: .reconnect, value: self.pairingStatus == .paired && shouldConnect)
             self.pairingStatus = state == .connected ? .paired : .notPaired
             if state == .notConnected, self.receivedStartStreamCommand {
                 self.receivedStartStreamCommand = false
