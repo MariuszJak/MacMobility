@@ -31,7 +31,7 @@ enum AppState {
 class ConnectionManager: NSObject, ObservableObject {
     @Published var availablePeerWithName: (MCPeerID?, String)?
     @Published var connectedPeerName: String?
-    @Published var receivedInvite: Bool = false
+    @Published var showsConnectionView: Bool = false
     @Published var receivedAlert: Bool = false
     @Published var receivedInviteWithNameFrom: (MCPeerID, String)?
     @Published var receivedStartStreamCommand: Bool = false
@@ -183,7 +183,7 @@ extension ConnectionManager: MCNearbyServiceAdvertiserDelegate {
         if let context, let deviceName = try? JSONDecoder().decode(DeviceName.self, from: context) {
             DispatchQueue.main.async {
                 self.isInitialLoading = true
-//                self.receivedInvite = true
+                self.showsConnectionView = false
                 self.receivedInviteWithNameFrom = (peerID, deviceName.name)
                 self.invitationHandler = invitationHandler
                 invitationHandler(true, self.session)
@@ -191,7 +191,7 @@ extension ConnectionManager: MCNearbyServiceAdvertiserDelegate {
         } else {
             DispatchQueue.main.async {
                 self.isInitialLoading = true
-//                self.receivedInvite = true
+                self.showsConnectionView = false
                 self.receivedInviteWithNameFrom = (peerID, peerID.displayName)
                 self.invitationHandler = invitationHandler
                 invitationHandler(true, self.session)
