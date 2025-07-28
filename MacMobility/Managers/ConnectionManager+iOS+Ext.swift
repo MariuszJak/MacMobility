@@ -11,6 +11,10 @@ import os
 import Foundation
 import Combine
 
+struct ServerReconnect: Codable {
+    let reconnect: Bool
+}
+
 struct CursorPosition: Codable {
     let width: CGFloat
     let height: CGFloat
@@ -74,6 +78,14 @@ extension ConnectionManager: ConnectionSenable {
     func send(shortcut: ShortcutObject) {
         guard !session.connectedPeers.isEmpty,
               let data = try? JSONEncoder().encode(shortcut) else {
+            return
+        }
+        send(data)
+    }
+    
+    func send(serverReconnect: ServerReconnect) {
+        guard !session.connectedPeers.isEmpty,
+              let data = try? JSONEncoder().encode(serverReconnect) else {
             return
         }
         send(data)
@@ -150,6 +162,21 @@ struct AppSendableInfo: Identifiable, Codable {
     }
 }
 
+struct PagesResponse: Codable {
+    let title: String
+    let assignedAppsToPages: [AssignedAppsToPages]
+}
+
+struct AssignedAppsToPages: Codable, Equatable {
+    let page: Int
+    let appPath: String
+}
+
+struct FocusResponse: Codable {
+    let title: String
+    let pageToFocus: AssignedAppsToPages
+}
+
 struct WorkspaceSendableItem: Identifiable, Codable {
     var id: String
     let title: String
@@ -168,6 +195,7 @@ public enum ShortcutType: String, Codable {
     case webpage
     case utility
     case control
+    case html
 }
 
 public enum UtilityType: String, Codable {
@@ -175,6 +203,7 @@ public enum UtilityType: String, Codable {
     case multiselection
     case automation
     case macro
+    case html
 }
 
 enum ChangeType: String, Codable {
@@ -323,7 +352,20 @@ extension ConnectionManager {
             if let shortcuts = try? JSONDecoder().decode(ShortcutsResponseDiff.self, from: data) {
                 guard shortcuts.shortcutTitle == "shortcutTitleDiff" else { return }
                 self.shortcutsDiffList = [ShortcutsDiffListData(shortcutsDiff: shortcuts.shortcutsDiff)]
+                if self.isInitialLoading {
+                    self.connectToIPIfNeeded()
+                }
                 self.isInitialLoading = false
+            }
+            
+            if let activeApps = try? JSONDecoder().decode(PagesResponse.self, from: data) {
+                guard activeApps.title == "AssignedApps" else { return }
+                self.assignedPagesToApps = activeApps.assignedAppsToPages
+            }
+            
+            if let focusTo = try? JSONDecoder().decode(FocusResponse.self, from: data) {
+                guard focusTo.title == "FocusResponse" else { return }
+                self.pageToFocus = focusTo.pageToFocus
             }
             
             if let stream = try? JSONDecoder().decode(StartStream.self, from: data) {
@@ -383,3 +425,19 @@ struct WebpageItem: Identifiable, Codable, Equatable {
     var browser: Browsers
 }
 
+import SwiftUI
+import WebKit
+
+struct HTMLCPUView: UIViewRepresentable {
+    var htmlContent: String
+
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView()
+        webView.loadHTMLString(htmlContent, baseURL: nil)
+        return webView
+    }
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        uiView.loadHTMLString(htmlContent, baseURL: nil)
+    }
+}

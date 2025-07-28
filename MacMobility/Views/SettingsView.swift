@@ -10,10 +10,12 @@ import SwiftUI
 class SettingsViewModel: ObservableObject {
     @Published var lockLandscape = true
     @Published var autoconnect = false
+    @Published var autoconnectToExternalDisplay = false
     
     init() {
         self._lockLandscape = .init(initialValue: KeychainManager().retrieve(key: .lockLandscape) ?? Keys.lockLandscape.defaultValue)
         self._autoconnect = .init(initialValue: KeychainManager().retrieve(key: .autoconnect) ?? Keys.autoconnect.defaultValue)
+        self._autoconnectToExternalDisplay = .init(initialValue: KeychainManager().retrieve(key: .autoconnectToExternalDisplay) ?? Keys.autoconnectToExternalDisplay.defaultValue)
     }
 }
 
@@ -53,6 +55,14 @@ struct SettingsView: View {
                     Toggle("Autoconnect to last paired device (experimental)", isOn: $viewModel.autoconnect)
                         .onChange(of: viewModel.autoconnect) { newValue in
                             KeychainManager().save(key: .autoconnect, value: newValue)
+                        }
+                        .padding()
+                        .background(.thinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .padding(.horizontal)
+                    Toggle("Autoconnect to external display (experimental)", isOn: $viewModel.autoconnectToExternalDisplay)
+                        .onChange(of: viewModel.autoconnectToExternalDisplay) { newValue in
+                            KeychainManager().save(key: .autoconnectToExternalDisplay, value: newValue)
                         }
                         .padding()
                         .background(.thinMaterial)

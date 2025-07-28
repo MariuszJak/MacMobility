@@ -71,7 +71,6 @@ struct iOSMainView: View {
     @State private var showsWorkspaces = false
     @State private var showsDisconnectAlert = false
     @State private var showsAppSettings = false
-    @State var showsConnectionView = false
     
     @State private var connectionAfterTutorial: (() -> Void)?
 
@@ -126,21 +125,21 @@ struct iOSMainView: View {
             .fullScreenCover(isPresented: $showsAppSettings) {
                 SettingsView(isPresented: $showsAppSettings)
             }
-            .fullScreenCover(isPresented: $showsConnectionView) {
+            .fullScreenCover(isPresented: $connectionManager.showsConnectionView) {
                 if let availablePeerWithName = connectionManager.availablePeerWithName, let availablePeer = availablePeerWithName.0 {
                     PairingView(
                         connectionManager: connectionManager,
-                        isPresented: $showsConnectionView,
+                        isPresented: $connectionManager.showsConnectionView,
                         deviceName: availablePeerWithName.1) {
                             let context = try? JSONEncoder().encode(ConnectionRequest(shouldConnect: true))
                             connectionManager.isInitialLoading = true
                             connectionManager.invitePeer(with: availablePeer, context: context)
-                            showsConnectionView = false
+                            connectionManager.showsConnectionView = false
                         } onReject: {
-                            showsConnectionView = false
+                            connectionManager.showsConnectionView = false
                         }
                 } else {
-                    NoPairingDevicesView(isPresented: $showsConnectionView)
+                    NoPairingDevicesView(isPresented: $connectionManager.showsConnectionView)
                 }
             }
         }
@@ -159,17 +158,16 @@ struct iOSMainView: View {
             if availablePeer != nil {
                 if didSeenDependencyScreens &&
                     connectionManager.appState == .foreground {
-                    showsConnectionView = true
+                    connectionManager.showsConnectionView = true
                 } else {
                     connectionAfterTutorial = {
-                        showsConnectionView = true
+                        connectionManager.showsConnectionView = true
                     }
                 }
             }
         }
-        .alert("Received invitation from \(connectionManager.receivedInviteWithNameFrom?.1 ?? "")",
-               isPresented: $connectionManager.receivedInvite) {
-            alertView
+        .onChange(of: connectionManager.pageToFocus) { pageToFocus in
+            currentPage = pageToFocus?.page ?? 1
         }
         .sheet(isPresented: $showQRScaner) {
             qrCodeScannerView
@@ -315,6 +313,14 @@ struct iOSMainView: View {
                                     .foregroundStyle(Color.white)
                             }
                         }
+                    case .html:
+                        if let scriptCode = test.scriptCode {
+                            HTMLCPUView(htmlContent: """
+                            \(scriptCode)
+                            """)
+                            .cornerRadius(20.0)
+                            .frame(width: itemsSize, height: itemsSize)
+                        }
                     }
                     .cornerRadius(20.0)
 //                    .frame(width: itemsSize, height: itemsSize)
@@ -444,7 +450,7 @@ struct iOSMainView: View {
             connectionManager.shortcutsDiffList.removeAll()
             connectionManager.startAdvertising()
             connectionManager.startBrowsing()
-            connectionManager.receivedInvite = false
+            connectionManager.showsConnectionView = false
         case .pairining:
             break
         }
@@ -555,7 +561,7 @@ struct iOSMainView: View {
                         .font(.system(size: 16.0))
                 }
                 .onTapGesture {
-                    showsConnectionView = true
+                    connectionManager.showsConnectionView = true
                 }
                 HStack {
                     Text("Do you have companion app? ")
@@ -572,3 +578,4 @@ struct iOSMainView: View {
         }
     }
 }
+

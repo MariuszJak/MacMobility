@@ -31,7 +31,7 @@ enum AppState {
 class ConnectionManager: NSObject, ObservableObject {
     @Published var availablePeerWithName: (MCPeerID?, String)?
     @Published var connectedPeerName: String?
-    @Published var receivedInvite: Bool = false
+    @Published var showsConnectionView: Bool = false
     @Published var receivedAlert: Bool = false
     @Published var receivedInviteWithNameFrom: (MCPeerID, String)?
     @Published var receivedStartStreamCommand: Bool = false
@@ -62,6 +62,8 @@ class ConnectionManager: NSObject, ObservableObject {
     @Published public var workspacesList: [WorkspacesListData] = []
     @Published public var shortcutsList: [ShortcutsListData] = []
     @Published public var shortcutsDiffList: [ShortcutsDiffListData] = []
+    @Published public var assignedPagesToApps: [AssignedAppsToPages] = []
+    @Published public var pageToFocus: AssignedAppsToPages?
     @Published public var alert: AlertMessage?
     @Published public var isInitialLoading: Bool = true
     public var rowCount = 4
@@ -104,7 +106,7 @@ class ConnectionManager: NSObject, ObservableObject {
                         value.forEach { sdiff in
                             self.shortcutsList.enumerated().forEach { (at, item) in
                                 item.shortcuts.enumerated().forEach { index, object in
-                                    if sdiff.item.id == object.id {
+                                    if sdiff.item.id == object.id && sdiff.item.page == object.page {
                                         self.shortcutsList[at].shortcuts.remove(at: index)
                                     }
                                 }
@@ -118,6 +120,14 @@ class ConnectionManager: NSObject, ObservableObject {
     deinit {
         stopAdvertising()
         stopBrowsing()
+    }
+    
+    func connectToIPIfNeeded() {
+        let autoconnect = KeychainManager().retrieve(key: .autoconnectToExternalDisplay) ?? Keys.autoconnectToExternalDisplay.defaultValue
+        guard ipAddress != nil && autoconnect else {
+            return
+        }
+        send(serverReconnect: .init(reconnect: true))
     }
     
     func startAdvertising() {
@@ -152,7 +162,6 @@ class ConnectionManager: NSObject, ObservableObject {
         serviceBrowser.invitePeer(peer, to: session, withContext: context, timeout: 30)
     }
     
-    
     func disconnect() {
         session.disconnect()
         pairingStatus = .notPaired
@@ -174,16 +183,18 @@ extension ConnectionManager: MCNearbyServiceAdvertiserDelegate {
         if let context, let deviceName = try? JSONDecoder().decode(DeviceName.self, from: context) {
             DispatchQueue.main.async {
                 self.isInitialLoading = true
-                self.receivedInvite = true
+                self.showsConnectionView = false
                 self.receivedInviteWithNameFrom = (peerID, deviceName.name)
                 self.invitationHandler = invitationHandler
+                invitationHandler(true, self.session)
             }
         } else {
             DispatchQueue.main.async {
                 self.isInitialLoading = true
-                self.receivedInvite = true
+                self.showsConnectionView = false
                 self.receivedInviteWithNameFrom = (peerID, peerID.displayName)
                 self.invitationHandler = invitationHandler
+                invitationHandler(true, self.session)
             }
         }
     }
@@ -217,6 +228,8 @@ extension ConnectionManager: MCNearbyServiceBrowserDelegate {
 extension ConnectionManager: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         DispatchQueue.main.async {
+            let shouldConnect = KeychainManager().retrieve(key: .autoconnect) ?? Keys.autoconnect.defaultValue
+            KeychainManager().save(key: .reconnect, value: self.pairingStatus == .paired && shouldConnect)
             self.pairingStatus = state == .connected ? .paired : .notPaired
             if state == .notConnected, self.receivedStartStreamCommand {
                 self.receivedStartStreamCommand = false

@@ -159,7 +159,9 @@ struct OrientationStack<Content: View>: View {
 public enum Keys: String, CaseIterable {
     case lockLandscape
     case autoconnect
+    case reconnect
     case seenTouchTutorial
+    case autoconnectToExternalDisplay
     
     var defaultValue: Bool {
         switch self {
@@ -172,6 +174,10 @@ public enum Keys: String, CaseIterable {
             return false
             #endif
         case .seenTouchTutorial:
+            return false
+        case .reconnect:
+            return true
+        case .autoconnectToExternalDisplay:
             return false
         }
     }
