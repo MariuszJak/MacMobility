@@ -298,7 +298,7 @@ struct iOSMainView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .cornerRadius(20.0)
-//                                    .frame(width: itemsSize, height: itemsSize)
+                                //                                    .frame(width: itemsSize, height: itemsSize)
                                     .clipShape(
                                         RoundedRectangle(cornerRadius: 20.0)
                                     )
@@ -313,19 +313,17 @@ struct iOSMainView: View {
                                     .foregroundStyle(Color.white)
                             }
                         }
-                    case .html:
-                        if let scriptCode = test.scriptCode {
-                            HTMLCPUView(htmlContent: """
-                            \(scriptCode)
-                            """)
-                            .cornerRadius(20.0)
-                            .frame(width: itemsSize, height: itemsSize)
-                        }
                     }
-                    .cornerRadius(20.0)
-//                    .frame(width: itemsSize, height: itemsSize)
                 }
-                .hoverEffect(.highlight)
+            case .html:
+                if let scriptCode = shortcut.scriptCode {
+                    HTMLCPUView(htmlContent: """
+                    \(scriptCode)
+                    """)
+                    .cornerRadius(20.0)
+                    .frame(width: itemsSize, height: itemsSize)
+                    .hoverEffect(.highlight)
+                }
            case .app:
                 if let data = shortcut.imageData,
                    let image = UIImage(data: data) {
@@ -430,8 +428,19 @@ struct iOSMainView: View {
                     .hoverEffect(.highlight)
                 }
             case .control:
-                RoundedRectangle(cornerRadius: 20.0)
-                    .fill(.blue)
+                if shortcut.title == "Volume Control" {
+                    VolumeContainerView { value in
+                        if let scriptCode = shortcut.scriptCode {
+                            let updatedScript = String(format: scriptCode, value)
+                            var tmp = shortcut
+                            tmp.scriptCode = updatedScript
+                            connectionManager.send(shortcut: tmp)
+                        }
+                    }
+                } else {
+                    RoundedRectangle(cornerRadius: 20.0)
+                        .fill(.blue)
+                }
             }
         }
     }

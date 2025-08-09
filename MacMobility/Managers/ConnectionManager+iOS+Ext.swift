@@ -441,3 +441,154 @@ struct HTMLCPUView: UIViewRepresentable {
         uiView.loadHTMLString(htmlContent, baseURL: nil)
     }
 }
+
+struct VolumeContainerView: View {
+    var completion: (Int) -> Void
+    var iconSize = 24.0
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+//                .fill(Color.init(hex: "D2D2D2"))
+                .fill(LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.init(hex: "E6E0DD"),
+                        Color.init(hex: "D3CCC9")
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ))
+//                .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+//                .shadow(color: .white.opacity(0.05), radius: 4, x: 0, y: -2)
+            HStack {
+                Image(systemName: "speaker.minus")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: iconSize, height: iconSize)
+                    .padding()
+                BarView(completion: completion)
+                Image(systemName: "speaker.plus")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: iconSize, height: iconSize)
+                    .padding()
+            }
+        }
+    }
+}
+
+
+import Combine
+
+class Throttler<T> {
+    private var cancellable: AnyCancellable?
+    private let subject = PassthroughSubject<T, Never>()
+    var action: ((T) -> Void)?
+
+    init() {
+        cancellable = subject
+            .throttle(for: .seconds(1), scheduler: RunLoop.main, latest: true)
+            .sink { [weak self] value in
+                self?.action?(value)
+            }
+    }
+
+    func send(_ value: T) {
+        subject.send(value)
+    }
+}
+
+struct BarView: View {
+    @State private var progress: Double = 0.5
+    @State private var previousValue: Double? = 0.5
+    var completion: (Int) -> Void
+    var throttler = Throttler<Int>()
+    
+    init(
+        completion: @escaping (Int) -> Void
+    ) {
+        self.completion = completion
+        throttler.action = { value in
+            completion(value)
+        }
+    }
+
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            RoundedRectangle(cornerRadius: 20)
+                .frame(height: 60)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.init(hex: "B54203"),
+                                Color.init(hex: "FF6906")
+                            ]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        .white.opacity(0.6),
+                                        .black.opacity(0.1)
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ), lineWidth: 8)
+                        )
+                )
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: -3, y: 3)
+
+            GeometryReader { geometry in
+                HStack(spacing: 0) {
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.init(hex: "D2D2D2"))
+                        .frame(width: geometry.size.width * progress)
+                    Spacer(minLength: 0)
+                }
+                .frame(height: 60)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .contentShape(Rectangle())
+//                ZStack {
+//                    RoundedRectangle(cornerRadius: 20)
+//                        .fill(.white)
+//                        .frame(width: 60, height: 60)
+//                    Image("slider-knob-texture")
+//                        .resizable()
+//                        .opacity(0.2)
+//                        .clipShape(RoundedRectangle(cornerRadius: 18))
+//                        .frame(width: 55, height: 55)
+//                }
+//                .position(x: (30 + (geometry.size.width - 60) * progress), y: 30.0)
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            let newProgress = min(max(0, value.location.x / geometry.size.width), 1)
+                            progress = newProgress
+                            let significantDigits = getFirstTwoDecimalDigits(of: newProgress)
+                            
+                            if let prev = previousValue {
+                                let previousDigits = getFirstTwoDecimalDigits(of: prev)
+                                if previousDigits != significantDigits {
+                                    let value = Double(round(100 * newProgress) / 100) * 100
+                                    throttler.send(Int(value))
+                                }
+                            }
+                            previousValue = newProgress
+                        }
+                )
+            }
+            .frame(height: 60)
+        }
+    }
+    
+    private func getFirstTwoDecimalDigits(of value: Double) -> (Int, Int) {
+        let shifted = value * 100
+        let intPart = Int(shifted)
+        let first = intPart / 10
+        let second = intPart % 10
+        return (first, second)
+    }
+}
