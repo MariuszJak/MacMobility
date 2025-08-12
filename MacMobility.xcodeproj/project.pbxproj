@@ -19,6 +19,7 @@
 		C0521FEC2DDFB81000A65A6F /* LiveStreamClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0521FEB2DDFB81000A65A6F /* LiveStreamClient.swift */; };
 		C0521FEE2DDFBA7500A65A6F /* StreamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0521FED2DDFBA7500A65A6F /* StreamView.swift */; };
 		C0521FF02DDFBAC200A65A6F /* TouchControlTutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0521FEF2DDFBAC200A65A6F /* TouchControlTutorialView.swift */; };
+		C062546F2E4BDF640016FF7C /* RotaryKnob.swift in Sources */ = {isa = PBXBuildFile; fileRef = C062546E2E4BDF640016FF7C /* RotaryKnob.swift */; };
 		C064BA5B2D876ED10091E2BE /* Color+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5A2D876ED10091E2BE /* Color+Ext.swift */; };
 		C064BA5D2D876EF60091E2BE /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */; };
 		C064BA5F2D876F080091E2BE /* Optional+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C064BA5E2D876F080091E2BE /* Optional+Ext.swift */; };
@@ -72,6 +73,7 @@
 		C0521FEB2DDFB81000A65A6F /* LiveStreamClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamClient.swift; sourceTree = "<group>"; };
 		C0521FED2DDFBA7500A65A6F /* StreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamView.swift; sourceTree = "<group>"; };
 		C0521FEF2DDFBAC200A65A6F /* TouchControlTutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchControlTutorialView.swift; sourceTree = "<group>"; };
+		C062546E2E4BDF640016FF7C /* RotaryKnob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryKnob.swift; sourceTree = "<group>"; };
 		C064BA5A2D876ED10091E2BE /* Color+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Ext.swift"; sourceTree = "<group>"; };
 		C064BA5C2D876EF60091E2BE /* UIColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		C064BA5E2D876F080091E2BE /* Optional+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Ext.swift"; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				C013BF592DBA7C710038F1B1 /* FullscreenLoadingView.swift */,
 				C0521FED2DDFBA7500A65A6F /* StreamView.swift */,
 				C0521FEF2DDFBAC200A65A6F /* TouchControlTutorialView.swift */,
+				C062546E2E4BDF640016FF7C /* RotaryKnob.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 				C071D7122DB3C74000ADD746 /* OrientationObserver.swift in Sources */,
 				C097751D2B5C23A100F4FFE6 /* AppDependencyScreen.swift in Sources */,
 				C097751B2B5C239B00F4FFE6 /* QRCodeScanner.swift in Sources */,
+				C062546F2E4BDF640016FF7C /* RotaryKnob.swift in Sources */,
 				C0521FF02DDFBAC200A65A6F /* TouchControlTutorialView.swift in Sources */,
 				C013BF562DBA7C450038F1B1 /* PairingView.swift in Sources */,
 				C09774E52B5C22A000F4FFE6 /* AppDelegate.swift in Sources */,

@@ -428,8 +428,17 @@ struct iOSMainView: View {
                     .hoverEffect(.highlight)
                 }
             case .control:
-                if shortcut.title == "Volume Control" {
+                if shortcut.path == "control:horizontal-slider" {
                     VolumeContainerView { value in
+                        if let scriptCode = shortcut.scriptCode {
+                            let updatedScript = String(format: scriptCode, value)
+                            var tmp = shortcut
+                            tmp.scriptCode = updatedScript
+                            connectionManager.send(shortcut: tmp)
+                        }
+                    }
+                } else if shortcut.path == "control:rotary-knob" {
+                    RotaryKnob(title: shortcut.title) { value in
                         if let scriptCode = shortcut.scriptCode {
                             let updatedScript = String(format: scriptCode, value)
                             var tmp = shortcut
