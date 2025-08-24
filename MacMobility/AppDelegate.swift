@@ -42,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 connectionManager.appState = .foreground
                 connectionManager.availablePeerWithName = connectionManager.availablePeerWithName
             }
-        }
+        } 
         connectionManager.appState = .foreground
     }
     

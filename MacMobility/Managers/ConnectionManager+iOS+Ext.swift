@@ -445,13 +445,28 @@ struct HTMLCPUView: UIViewRepresentable {
 struct VolumeContainerView: View {
     var completion: (Int) -> Void
     var iconSize = 24.0
+    var item: ShortcutObject
+    let initialValue: Double
+    
+    init(item: ShortcutObject, completion: @escaping (Int) -> Void, iconSize: Double = 24.0) {
+        self.completion = completion
+        self.iconSize = iconSize
+        self.item = item
+        
+        if let value = item.color, value.contains("INITIAL") {
+            let sanitizedValue = value.replacingOccurrences(of: "INITIAL:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+            initialValue = (Double(sanitizedValue) ?? 50) / 100
+        } else {
+            initialValue = 0.5
+        }
+    }
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color(red: 0.96, green: 0.96, blue: 0.96))
             HStack {
-                BarView(completion: completion)
+                BarView(initialValue: initialValue, completion: completion)
                     .padding(.horizontal, 16.0)
             }
         }
@@ -486,8 +501,10 @@ struct BarView: View {
     var throttler = Throttler<Int>()
     
     init(
+        initialValue: Double,
         completion: @escaping (Int) -> Void
     ) {
+        self.progress = initialValue
         self.completion = completion
         throttler.action = { value in
             completion(value)

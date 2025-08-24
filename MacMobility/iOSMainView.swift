@@ -429,7 +429,7 @@ struct iOSMainView: View {
                 }
             case .control:
                 if shortcut.path == "control:horizontal-slider" {
-                    VolumeContainerView { value in
+                    VolumeContainerView(item: shortcut) { value in
                         if let scriptCode = shortcut.scriptCode {
                             let updatedScript = String(format: scriptCode, value)
                             var tmp = shortcut
@@ -438,7 +438,7 @@ struct iOSMainView: View {
                         }
                     }
                 } else if shortcut.path == "control:rotary-knob" {
-                    RotaryKnob(title: shortcut.title) { value in
+                    RotaryKnob(item: shortcut, title: shortcut.title) { value in
                         if let scriptCode = shortcut.scriptCode {
                             let updatedScript = String(format: scriptCode, value)
                             var tmp = shortcut

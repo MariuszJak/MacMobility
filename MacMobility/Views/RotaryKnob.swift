@@ -10,21 +10,39 @@ import SwiftUI
 
 struct RotaryKnob: View {
     @State private var angle: Double = 0
-    @State private var startAngle: Double = 0
+    @State private var startAngle: Double
     @State private var dragStartAngle: Double = 0
     private var throttler = Throttler<Int>(seconds: 0.25)
     var completion: (Int) -> Void
     let title: String
+    var item: ShortcutObject
     
     init(
+        item: ShortcutObject,
         title: String,
         completion: @escaping (Int) -> Void
     ) {
         self.title = title
         self.completion = completion
+        self.item = item
         throttler.action = { value in
             completion(value)
         }
+        
+        if let value = item.color, value.contains("INITIAL") {
+            let sanitizedValue = value.replacingOccurrences(of: "INITIAL:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let minInput = 0.0
+            let maxInput = 100.0
+            let minOutput = 0.0
+            let maxOutput = 360.0
+            let test = minOutput + ((Double(sanitizedValue) ?? 0.0) - minInput) * (maxOutput - minOutput) / (maxInput - minInput)
+            angle = test
+            startAngle = test
+            print("INIT: \(startAngle), \(angle)")
+        } else {
+            startAngle = 0.0
+        }
+        
     }
 
     var body: some View {
@@ -119,8 +137,6 @@ struct RotaryKnob: View {
         let maxInput = 360.0
         let minOutput = 0.0
         let maxOutput = 100.0
-        
-        // Map 0–360 → 100–200
         return minOutput + (angle - minInput) * (maxOutput - minOutput) / (maxInput - minInput)
     }
 }
