@@ -38,11 +38,9 @@ struct RotaryKnob: View {
             let test = minOutput + ((Double(sanitizedValue) ?? 0.0) - minInput) * (maxOutput - minOutput) / (maxInput - minInput)
             angle = test
             startAngle = test
-            print("INIT: \(startAngle), \(angle)")
         } else {
             startAngle = 0.0
         }
-        
     }
 
     var body: some View {
@@ -98,12 +96,6 @@ struct RotaryKnob: View {
                         .stroke(style: StrokeStyle(lineWidth: 4, lineCap: .round))
                         .foregroundColor(Color.init(hex: "FF6906"))
                         .frame(width: geo.size.width, height: geo.size.height)
-
-                    // Angle text
-                    Text(title)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.gray)
-                        .position(x: center.x, y: center.y + knobRadius + 20)
                 }
                 .contentShape(Rectangle())
                 .gesture(

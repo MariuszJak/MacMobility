@@ -298,7 +298,6 @@ struct iOSMainView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .cornerRadius(20.0)
-                                //                                    .frame(width: itemsSize, height: itemsSize)
                                     .clipShape(
                                         RoundedRectangle(cornerRadius: 20.0)
                                     )
@@ -321,7 +320,6 @@ struct iOSMainView: View {
                     \(scriptCode)
                     """)
                     .cornerRadius(20.0)
-                    .frame(width: itemsSize, height: itemsSize)
                     .hoverEffect(.highlight)
                 }
            case .app:
@@ -335,7 +333,6 @@ struct iOSMainView: View {
                             .scaleEffect(1.2)
                             .aspectRatio(contentMode: .fill)
                             .cornerRadius(20.0)
-//                            .frame(width: itemsSize, height: itemsSize)
                             .clipShape(
                                 RoundedRectangle(cornerRadius: 20.0)
                             )
@@ -344,7 +341,6 @@ struct iOSMainView: View {
                 } else {
                     RoundedRectangle(cornerRadius: 20)
                         .fill(Color.red)
-//                        .frame(width: itemsSize, height: itemsSize)
                 }
             case .utility:
                 if let data = shortcut.imageData,
@@ -357,7 +353,6 @@ struct iOSMainView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .cornerRadius(20.0)
-//                                .frame(width: itemsSize, height: itemsSize)
                                 .clipShape(
                                     RoundedRectangle(cornerRadius: 20.0)
                                 )
@@ -411,7 +406,6 @@ struct iOSMainView: View {
                                 .scaleEffect(1.1)
                                 .aspectRatio(contentMode: .fill)
                                 .cornerRadius(20.0)
-//                                .frame(width: itemsSize, height: itemsSize)
                                 .clipShape(
                                     RoundedRectangle(cornerRadius: 20.0)
                                 )
@@ -596,4 +590,3 @@ struct iOSMainView: View {
         }
     }
 }
-
