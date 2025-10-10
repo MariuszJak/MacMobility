@@ -83,7 +83,15 @@ struct iOSMainView: View {
     }
     var itemsSize: CGFloat {
         if isIPad {
-            return (orientationObserver.orientation.isLandscape ? 140 : (isIPadPro13Inch() ? 110 : 90))
+            if isIPad5thGen() {
+                return (orientationObserver.orientation.isLandscape ? 120 : 90)
+            } else if isIPadPro13Inch() {
+                return orientationObserver.orientation.isLandscape ? 140 : 110
+            } else if isIPadPro11Inch() {
+                return orientationObserver.orientation.isLandscape ? 140 : 90
+            } else {
+                return (orientationObserver.orientation.isLandscape ? 140 : (isIPadPro13Inch() ? 110 : 90))
+            }
         } else {
            return 80
         }
@@ -204,7 +212,7 @@ struct iOSMainView: View {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
             }
             .padding(.vertical, 16)
-            .frame(width: orientationObserver.orientation.isLandscape ? 1100.0 : (isIPadPro13Inch() ? 900.0 : 700.0))
+            .frame(width: orientationObserver.orientation.isLandscape ? (isIPad5thGen() ? 1000.0 : 1100.0) : (isIPadPro13Inch() ? 900.0 : 700.0))
         } else {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
@@ -225,12 +233,17 @@ struct iOSMainView: View {
 
     func isIPadPro13Inch() -> Bool {
         let identifier = getDeviceModelIdentifier()
-        return identifier == "iPad16,3" || identifier == "iPad16,4" // M4 13-inch
+        return identifier == "iPad16,3" || identifier == "iPad16,4" // || identifier == "arm64"
     }
 
     func isIPadPro11Inch() -> Bool {
         let identifier = getDeviceModelIdentifier()
-        return identifier == "iPad16,1" || identifier == "iPad16,2" // M4 11-inch
+        return identifier == "iPad16,1" || identifier == "iPad16,2" // || identifier == "arm64"
+    }
+    
+    func isIPad5thGen() -> Bool {
+        let identifier = getDeviceModelIdentifier()
+        return identifier == "iPad6,11" || identifier == "iPad6,12" // || identifier == "arm64"
     }
     
     func findLargestPage(in shortcuts: [ShortcutObject]) -> Int {
