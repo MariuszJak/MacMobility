@@ -120,7 +120,7 @@ struct RotaryKnob: View {
                         }
                 )
             }
-            .frame(width: 200, height: 200)
+//            .frame(width: 200, height: 200)
         }
     }
     

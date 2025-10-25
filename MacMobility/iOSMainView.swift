@@ -110,13 +110,13 @@ struct iOSMainView: View {
             ZStack {
                 if connectionManager.pairingStatus == .paired  {
                     shortcutItemsGridView
-                        .padding(.top, 38.0)
+                        .padding(.top, 18.0)
                 }
                 VStack {
                     Spacer()
                     HStack {
                         Spacer()
-                        disconnectButtonView
+                        bottomButtonsGridView
                     }
                 }
                 if connectionManager.pairingStatus == .pairining || connectionManager.pairingStatus == .paired {
@@ -512,7 +512,7 @@ struct iOSMainView: View {
         }
     }
     
-    private var disconnectButtonView: some View {
+    private var bottomButtonsGridView: some View {
         HStack {
             if connectionManager.pairingStatus == .paired {
                 ScrollView(.horizontal) {

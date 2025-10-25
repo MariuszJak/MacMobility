@@ -26,12 +26,20 @@ struct AnimatedButton<Label: View>: View {
     
     var body: some View {
         ZStack {
-            Button(action: {
-                startLoading()
-            }) {
+            ZStack {
                 label
+                    .onTapGesture {
+                        if !isLoading { startLoading() }
+                    }
+                    .onLongPressGesture(minimumDuration: 0.5, pressing: { pressing in
+                        if pressing {
+                            startLongPress()
+                        } else {
+                            endLongPress()
+                        }
+                    }, perform: { })
+                    .disabled(isLoading)
             }
-            .disabled(isLoading) // Disable button while loading
             
             if isLoading || showSuccess {
                 // Overlay with animation
@@ -78,5 +86,15 @@ struct AnimatedButton<Label: View>: View {
                 }
             }
         }
+    }
+    
+    private func startLongPress() {
+        // Implement start long press behavior here
+        print("Start long press")
+    }
+    
+    private func endLongPress() {
+        // Implement end long press behavior here
+        print("End long press")
     }
 }
