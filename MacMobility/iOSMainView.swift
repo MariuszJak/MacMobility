@@ -110,7 +110,7 @@ struct iOSMainView: View {
             ZStack {
                 if connectionManager.pairingStatus == .paired  {
                     shortcutItemsGridView
-                        .padding(.top, 18.0)
+                        .padding(.top, 14.0)
                 }
                 VStack {
                     Spacer()
@@ -554,7 +554,7 @@ struct iOSMainView: View {
                 }
             }
         }
-        .padding(.bottom, 8)
+        .padding(.bottom, 2)
         .alert("Are you sure you want to disconnect?",
                isPresented: $showsDisconnectAlert) {
             HStack {

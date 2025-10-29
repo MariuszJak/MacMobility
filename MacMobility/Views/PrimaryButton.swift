@@ -21,7 +21,7 @@ struct PrimaryButton: View {
                     .foregroundStyle(colorScheme == .dark ? .black : .white)
                     .font(.system(size: 14.0, weight: .bold))
             }
-            .padding(.all, 10.0)
+            .padding(.all, 7.0)
             .frame(maxWidth: .infinity)
             .background(RoundedRectangle(cornerRadius: 12).fill(isSelected ? colorScheme == .dark ? .white : .black : .gray))
             .shadow(radius: 2)
