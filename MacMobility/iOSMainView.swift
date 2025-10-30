@@ -329,7 +329,7 @@ struct iOSMainView: View {
                 }
             case .html:
                 if let scriptCode = shortcut.scriptCode {
-                    HTMLCPUView(htmlContent: """
+                    HTMLView(htmlContent: """
                     \(scriptCode)
                     """)
                     .cornerRadius(20.0)

@@ -428,17 +428,28 @@ struct WebpageItem: Identifiable, Codable, Equatable {
 import SwiftUI
 import WebKit
 
-struct HTMLCPUView: UIViewRepresentable {
+struct HTMLView: UIViewRepresentable {
     var htmlContent: String
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
 
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
+        webView.navigationDelegate = context.coordinator
         webView.loadHTMLString(htmlContent, baseURL: nil)
         return webView
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
         uiView.loadHTMLString(htmlContent, baseURL: nil)
+    }
+    
+    class Coordinator: NSObject, WKNavigationDelegate {
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            webView.evaluateJavaScript("window.scrollTo(0, document.body.scrollHeight);")
+        }
     }
 }
 
