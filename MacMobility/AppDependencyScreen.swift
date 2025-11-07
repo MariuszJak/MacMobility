@@ -162,6 +162,7 @@ public enum Keys: String, CaseIterable {
     case reconnect
     case seenTouchTutorial
     case autoconnectToExternalDisplay
+    case rapidFireEnabled
     
     var defaultValue: Bool {
         switch self {
@@ -178,6 +179,8 @@ public enum Keys: String, CaseIterable {
         case .reconnect:
             return true
         case .autoconnectToExternalDisplay:
+            return false
+        case .rapidFireEnabled:
             return false
         }
     }

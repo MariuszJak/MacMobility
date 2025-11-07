@@ -11,10 +11,12 @@ class SettingsViewModel: ObservableObject {
     @Published var lockLandscape = true
     @Published var autoconnect = false
     @Published var autoconnectToExternalDisplay = false
+    @Published var rapidFireEnabled = false
     
     init() {
         self._lockLandscape = .init(initialValue: KeychainManager().retrieve(key: .lockLandscape) ?? Keys.lockLandscape.defaultValue)
         self._autoconnect = .init(initialValue: KeychainManager().retrieve(key: .autoconnect) ?? Keys.autoconnect.defaultValue)
+        self._rapidFireEnabled = .init(initialValue: KeychainManager().retrieve(key: .rapidFireEnabled) ?? Keys.rapidFireEnabled.defaultValue)
         self._autoconnectToExternalDisplay = .init(initialValue: KeychainManager().retrieve(key: .autoconnectToExternalDisplay) ?? Keys.autoconnectToExternalDisplay.defaultValue)
     }
 }
@@ -63,6 +65,14 @@ struct SettingsView: View {
                     Toggle("Autoconnect to external display (experimental)", isOn: $viewModel.autoconnectToExternalDisplay)
                         .onChange(of: viewModel.autoconnectToExternalDisplay) { newValue in
                             KeychainManager().save(key: .autoconnectToExternalDisplay, value: newValue)
+                        }
+                        .padding()
+                        .background(.thinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .padding(.horizontal)
+                    Toggle("Rapid fire enabled (trigger actions more often)", isOn: $viewModel.rapidFireEnabled)
+                        .onChange(of: viewModel.rapidFireEnabled) { newValue in
+                            KeychainManager().save(key: .rapidFireEnabled, value: newValue)
                         }
                         .padding()
                         .background(.thinMaterial)

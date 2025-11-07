@@ -63,6 +63,11 @@ struct AnimatedButton<Label: View>: View {
     }
     
     private func startLoading() {
+        let rapidFireEnabled = KeychainManager().retrieve(key: .rapidFireEnabled) ?? Keys.rapidFireEnabled.defaultValue
+        guard !rapidFireEnabled else {
+            action()
+            return
+        }
         withAnimation {
             isLoading = true
         }

@@ -81,9 +81,14 @@ struct iOSMainView: View {
     var isIPad: Bool {
         UIDevice.current.localizedModel.contains("iPad")
     }
+    
+    var is5thOr6yGen: Bool {
+        isIPad5thGen() || isIPad6thGen()
+    }
+    
     var itemsSize: CGFloat {
         if isIPad {
-            if isIPad5thGen() {
+            if is5thOr6yGen {
                 return (orientationObserver.orientation.isLandscape ? 120 : 90)
             } else if isIPadPro13Inch() {
                 return orientationObserver.orientation.isLandscape ? 140 : 110
@@ -212,7 +217,7 @@ struct iOSMainView: View {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
             }
             .padding(.vertical, 16)
-            .frame(width: orientationObserver.orientation.isLandscape ? (isIPad5thGen() ? 1000.0 : 1100.0) : (isIPadPro13Inch() ? 900.0 : 700.0))
+            .frame(width: orientationObserver.orientation.isLandscape ? (is5thOr6yGen ? 1000.0 : 1100.0) : (isIPadPro13Inch() ? 900.0 : 700.0))
         } else {
             VStack {
                 grid(shortcuts: connectionManager.shortcutsList.flatMap { $0.shortcuts }.filter { $0.page == currentPage })
@@ -244,6 +249,11 @@ struct iOSMainView: View {
     func isIPad5thGen() -> Bool {
         let identifier = getDeviceModelIdentifier()
         return identifier == "iPad6,11" || identifier == "iPad6,12" // || identifier == "arm64"
+    }
+    
+    func isIPad6thGen() -> Bool {
+        let identifier = getDeviceModelIdentifier()
+        return identifier == "iPad7,5" || identifier == "iPad7,6" // || identifier == "arm64"
     }
     
     func findLargestPage(in shortcuts: [ShortcutObject]) -> Int {
