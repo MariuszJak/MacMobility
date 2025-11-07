@@ -269,7 +269,8 @@ struct iOSMainView: View {
             ForEach(0..<21) { index in
                 VStack {
                     ZStack {
-                        itemView(shortcuts: shortcuts, index: index)
+                        itemView(shortcuts: shortcuts, index: index, size: .init(width: (itemsSize) * ((item(for: index, from: shortcuts)?.size?.width ?? 1.0)) + testSize * ((item(for: index, from: shortcuts)?.size?.width ?? 1.0) - 1),
+                                                                                 height: (itemsSize) * ((item(for: index, from: shortcuts)?.size?.height ?? 1.0)) + testSize * ((item(for: index, from: shortcuts)?.size?.height ?? 1.0) - 1)))
                             .frame(
                                 width: (itemsSize) * ((item(for: index, from: shortcuts)?.size?.width ?? 1.0)) + testSize * ((item(for: index, from: shortcuts)?.size?.width ?? 1.0) - 1),
                                 height: (itemsSize) * ((item(for: index, from: shortcuts)?.size?.height ?? 1.0)) + testSize * ((item(for: index, from: shortcuts)?.size?.height ?? 1.0) - 1),
@@ -306,7 +307,7 @@ struct iOSMainView: View {
     }
     
     @ViewBuilder
-    func itemView(shortcuts: [ShortcutObject], index: Int) -> some View {
+    func itemView(shortcuts: [ShortcutObject], index: Int, size: CGSize) -> some View {
         if let shortcut = shortcuts.first(where: { $0.indexes?.first == index }) {
             switch shortcut.type {
             case .shortcut:
@@ -403,7 +404,7 @@ struct iOSMainView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .cornerRadius(20.0)
-                                .frame(width: itemsSize, height: itemsSize)
+                                .frame(width: size.width, height: size.height)
                                 .clipShape(
                                     RoundedRectangle(cornerRadius: 20.0)
                                 )
