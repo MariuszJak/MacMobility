@@ -196,6 +196,8 @@ struct iOSMainView: View {
             }
         })
         .onAppear {
+            let isIdleTimerDisabled = KeychainManager().retrieve(key: .isIdleTimerDisabled) ?? Keys.isIdleTimerDisabled.defaultValue
+            UIApplication.shared.isIdleTimerDisabled = isIdleTimerDisabled
             connectionManager.startAdvertising()
             connectionManager.startBrowsing()
             if !didSeenDependencyScreens {

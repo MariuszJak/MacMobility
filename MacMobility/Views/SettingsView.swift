@@ -12,11 +12,13 @@ class SettingsViewModel: ObservableObject {
     @Published var autoconnect = false
     @Published var autoconnectToExternalDisplay = false
     @Published var rapidFireEnabled = false
+    @Published var isIdleTimerDisabled = false
     
     init() {
         self._lockLandscape = .init(initialValue: KeychainManager().retrieve(key: .lockLandscape) ?? Keys.lockLandscape.defaultValue)
         self._autoconnect = .init(initialValue: KeychainManager().retrieve(key: .autoconnect) ?? Keys.autoconnect.defaultValue)
         self._rapidFireEnabled = .init(initialValue: KeychainManager().retrieve(key: .rapidFireEnabled) ?? Keys.rapidFireEnabled.defaultValue)
+        self._isIdleTimerDisabled = .init(initialValue: KeychainManager().retrieve(key: .isIdleTimerDisabled) ?? Keys.isIdleTimerDisabled.defaultValue)
         self._autoconnectToExternalDisplay = .init(initialValue: KeychainManager().retrieve(key: .autoconnectToExternalDisplay) ?? Keys.autoconnectToExternalDisplay.defaultValue)
     }
 }
@@ -49,6 +51,15 @@ struct SettingsView: View {
                         .onChange(of: viewModel.lockLandscape) { newValue in
                             KeychainManager().save(key: .lockLandscape, value: newValue)
                             OrientationManager.lock(to: newValue ? .landscape : .all)
+                        }
+                        .padding()
+                        .background(.thinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .padding(.horizontal)
+                    Toggle("Prevent screen dimming", isOn: $viewModel.isIdleTimerDisabled)
+                        .onChange(of: viewModel.isIdleTimerDisabled) { newValue in
+                            KeychainManager().save(key: .isIdleTimerDisabled, value: newValue)
+                            UIApplication.shared.isIdleTimerDisabled = newValue
                         }
                         .padding()
                         .background(.thinMaterial)

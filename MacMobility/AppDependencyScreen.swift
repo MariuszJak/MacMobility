@@ -163,6 +163,7 @@ public enum Keys: String, CaseIterable {
     case seenTouchTutorial
     case autoconnectToExternalDisplay
     case rapidFireEnabled
+    case isIdleTimerDisabled
     
     var defaultValue: Bool {
         switch self {
@@ -182,6 +183,8 @@ public enum Keys: String, CaseIterable {
             return false
         case .rapidFireEnabled:
             return false
+        case .isIdleTimerDisabled:
+            return true
         }
     }
 }
